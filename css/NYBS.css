@@ -1,0 +1,145 @@
+/* 特定于WORK链接的样式 */
+.nav-item.workbutton a {
+    color: var(--color-primitives-brand-900); /* WORK链接的颜色 */
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 0 50px; /* 左右各50px的内边距 */
+    margin: 0 auto 30px auto;
+    box-sizing: border-box;
+    max-width: 1720px; /* 根据需要设定最大宽度 */
+    width: 100%; /* 占满父容器宽度 */
+}
+
+.self-identity {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    box-sizing: border-box;
+    max-width: 1720px;
+    width: 100%;
+}
+
+.title {
+    font-family: var(--title-page-font-family);
+    font-weight: var(--title-page-font-weight);
+    color: var(--color-primitives-brand-900);
+    font-size: var(--title-page-font-size);
+    letter-spacing: var(--title-page-letter-spacing);
+    line-height: var(--title-page-line-height);
+    font-style: var(--title-page-font-style);
+    max-width: 800px;
+}
+  
+.title .worksubtitle {
+    font-family: var(--Subheading-font-family);
+    font-weight: var(--Subheading-font-weight);
+    color: var(--color-primitives-brand-500);
+    font-size: var(--Subheading-font-size);
+    letter-spacing: var(--Subheading-letter-spacing);
+    line-height: var(--Subheading-line-height);
+    font-style: var(--Subheading-font-style);
+}
+  
+.description {
+    font-family: var(--heading-font-family);
+    font-weight: var(--heading-font-weight);
+    color: var(--color-text-brand-default);
+    font-size: var(--heading-font-size);
+    letter-spacing: var(--heading-letter-spacing);
+    line-height: var(--heading-line-height);
+    font-style: var(--heading-font-style);
+    max-width: 800px;
+}
+
+.section-3img {
+    display: flex;
+    justify-content: space-between; /* 可选：调整子元素之间的间距 */
+    gap: 20px; /* 设置子元素之间的间距为20px */
+}
+
+.left-sector-item {
+    width: calc(50% - 10px);
+}
+
+.right-sector-item {
+    display: flex;
+    flex-direction: column; /* 子元素垂直排列 */
+    width: calc(50% - 10px);
+    gap: 20px; /* B和C之间的间隔 */
+    max-width: 800px;
+}
+
+.work-img-containerb, .work-img-containerbc {
+    flex: 1; /* 让B和C的高度自动扩展 */
+}
+
+.poster-img {
+    width: 100%; /* 图片宽度占满其包裹器 */
+    height: auto;
+}
+
+.section-2img {
+    display: flex;
+    flex-wrap: nowrap; /* 确保不换行 */
+    justify-content: flex-start; /* 子元素靠左对齐 */
+    gap: 20px; /* 设置子元素之间的间距为20px */
+    box-sizing: border-box;
+    max-width: 1720px; /* 根据需要设定最大宽度 */
+    width: 100%; /* 占满父容器宽度 */
+}
+
+.section-2img .sector-item{
+    width: calc(50% - 10px);
+    height: auto;
+    flex-shrink: 0;
+    display: flex;
+}
+
+ /*确认父容器的相对定位 */
+ .work-img-container {
+    position: relative;
+    display: inline-block; /* 确保容器仅占据必要的空间 */
+}
+
+.enlarge-btn {
+    position: absolute; /* 绝对定位到父容器 */
+    bottom: 10px; /* 距离底部的距离 */
+    right: 10px; /* 距离右侧的距离 */
+    background-color: rgba(0, 0, 0, 0.5); /* 半透明背景 */
+    color: white; /* 文字颜色 */
+    border: none; /* 去掉默认边框 */
+    padding: 8px 10px; /* 内边距 */
+    cursor: pointer; /* 鼠标指针样式 */
+    opacity: 0; /* 初始状态不可见 */
+    transition: opacity 0.3s ease; /* 平滑过渡效果 */
+    z-index: 10; /* 确保按钮在图片上方 */
+}
+  
+  /* 当鼠标悬停在.work-img上时，显示按钮 */
+  .work-img-container:hover .enlarge-btn {
+    opacity: 1; /* 显示按钮 */
+}
+
+/* 响应式设计 */
+@media (max-width: 900px) {
+    .section-2img, .section-3img {
+        flex-direction: column; /* 改为垂直排列 */
+        gap: 10px;
+        width: 100%;
+    }
+    .left-sector-item, .right-sector-item {
+        width: 100%; /* 每个图片占据全宽 */
+        gap: 10px;
+    }
+    .section-2img .sector-item {
+        width: 100%; /* 每个图片占据全宽 */
+        height: auto; /* 高度自适应 */
+        padding: 0; /* 移除可能存在的内边距 */
+        box-sizing: border-box;
+    }
+}

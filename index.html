@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="Likai Wang's portfolio showcasing his work and experience.">
+        <title>Portfolio - Likai Wang</title>
+        <link rel="stylesheet" type="text/css" href="/css/globals.css">
+        <link rel="stylesheet" type="text/css" href="/css/index.css">
+        <link rel="stylesheet" type="text/css" href="/css/styleguide.css">
+    </head>
+    <body>
+        <div class="home">
+            <header>  
+                <div id="navbar-container"></div>
+            </header>
+            
+            <div class="container">
+                <div class="works">
+                    <a href="/works/NYBS.html" class="sector-link">
+                        <article class="sector-item">
+                            <h2 class="work-title">NYBS</h2>
+                            <div class="content">
+                                <img class="img" src="/img/home/nybs-img.png" alt="NYBS Project Image">
+                            </div>
+                        </article>
+                    </a>
+                    <a href="/works/Cellphone info.html" class="sector-link">
+                        <article class="sector-item">
+                            <h2 class="work-title">Cellphone info</h2>
+                            <div class="content">
+                                <img class="img" src="/img/home/cellphone-info-img.png" alt="Cellphone Info Image">
+                            </div>
+                        </article>
+                    </a>
+                    <a href="/works/Italian cookbook.html" class="sector-link">
+                        <article class="sector-item">
+                            <h2 class="work-title">Cookbook</h2>
+                            <div class="content">
+                                <img class="img" src="/img/home/italian-cookbook-img.png" alt="Italian Cookbook Image">
+                            </div>
+                        </article>
+                    </a>
+                    <a href="/works/SONDER.html" class="sector-link">
+                        <article class="sector-item">
+                            <h2 class="work-title">SONDER</h2>
+                            <div class="content">
+                                <img class="img" src="/img/home/sonder-img.png" alt="SONDER Image">
+                            </div>
+                        </article>
+                    </a>
+                    <a href="/works/Plagiarism.html" class="sector-link">
+                        <article class="sector-item">
+                            <h2 class="work-title">Plagiarism</h2>
+                            <div class="content">
+                                <img class="img" src="/img/home/plagiarism-img.png" alt="Plagiarism Image">
+                            </div>
+                        </article>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <script>
+            fetch('/navbar.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('navbar-container').innerHTML = html;
+                })
+                .catch(error => console.error('Error loading navigation bar:', error));
+        </script>
+    </body>
+</html>

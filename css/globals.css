@@ -1,0 +1,126 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
+* {
+    -webkit-font-smoothing: antialiased;
+    box-sizing: border-box;
+}
+html,
+body {
+    margin: 0px;
+    height: 100%;
+}
+/* a blue color as a generic focus style */
+button:focus-visible {
+    outline: 2px solid #4a90e2 !important;
+    outline: -webkit-focus-ring-color auto 5px !important;
+}
+a {
+    text-decoration: none;
+}
+
+/* 定义全局变量 */
+
+
+.home {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* 确保最小高度为视窗高度 */
+  box-sizing: border-box; /* 确保padding和border包含在元素的总宽度和高度内 */
+}
+
+/* 导航栏样式 */
+.navigation {
+  height: 90px;
+  padding: 30px 50px;
+  max-width: 1720px; /* 根据需要设定一个最大宽度 */
+  align-self: stretch;
+  background-color: var(--color-background-default-default);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 0 auto; /* 自动的左右外边距，使元素居中 */
+  box-sizing: border-box; /* 确保padding和border包含在元素的总宽度和高度内 */
+  width: 100%; /* 保证占据父容器宽度 */
+}
+    
+/* 特定于logo的文字样式 */
+.text-wrapper {
+  font-family: var(--heading-font-family);
+  font-weight: var(--heading-font-weight);
+  color: var(--color-text-brand-default);
+  font-size: var(--heading-font-size);
+  letter-spacing: var(--heading-letter-spacing);
+  line-height: var(--heading-line-height);
+  font-style: var(--heading-font-style);
+}
+    
+/* 导航链接容器样式 */
+.navigation-wrap {
+  width: 299px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+    
+/* 导航链接的基础样式 */
+.nav-item a {
+  color: var(--color-text-brand-tertiary); /* 默认颜色 */
+}
+  
+/* 悬停效果 */
+.nav-item:hover a {
+  color: var(--color-primitives-brand-900);
+}
+
+/* 响应式设计：小屏幕下的样式 */
+@media (max-width: 500px) {
+  /* 调整navigation的padding以适应小屏幕 */
+  .navigation {
+    flex-direction: column; /* 改变主轴方向为垂直 */
+    align-items: flex-start; /* 子元素左对齐 */
+    padding: 30px 20px; /* 减少内边距以便更好地适应小屏幕 */
+  }
+  
+  /* 让navigation-wrap占据全宽，并允许内部子元素水平排列 */
+  .navigation-wrap {
+    width: 100%; /* 占满全宽 */
+    display: flex;
+    flex-wrap: nowrap; /* 不换行 */
+    justify-content: flex-start; /* 左对齐 */
+    gap: 20px; /* 子元素之间添加间距 */
+    margin-top: 8px; /* 给导航项一些顶部间距，使其位于第二行 */
+  }
+}
+
+@media (max-width: 1310px) {
+  .home .navigation {
+    padding: 30px 40px; /* 调整padding以适应更大的屏幕尺寸 */
+  }
+  .home .container {
+    padding: 0 40px; /* 保持垂直间距 */
+  }
+}
+
+@media (max-width: 900px) {
+  .home .navigation {
+    padding: 30px 30px; /* 调整padding以适应更大的屏幕尺寸 */
+  }
+  .home .works {
+    padding: 0 30px; /* 进一步减少内边距 */
+  }
+  .home .container {
+    padding: 0 30px; /* 保持垂直间距 */
+  }
+}
+
+@media (max-width: 490px) {
+  .home .navigation {
+    padding: 30px 20px; /* 调整padding以适应更大的屏幕尺寸 */
+  }
+  .home .works {
+    padding: 0 20px; /* 更进一步减少内边距 */
+  }
+  .home .container {
+    padding: 0 20px; /* 保持垂直间距 */
+  }
+}

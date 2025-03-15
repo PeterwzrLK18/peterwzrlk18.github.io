@@ -1,0 +1,127 @@
+/* 特定于ABOUT链接的样式 */
+.nav-item.aboutbutton a {
+  color: var(--color-primitives-brand-900); /* WORK链接的颜色 */
+}
+
+.section-wrapper {
+  width: 100%; /* 占满整个屏幕宽度 */
+  height: auto; /* 根据内容自动调整高度 */
+  padding: 0; /* 移除默认padding */
+  margin: 0; /* 移除外边距 */
+  box-sizing: border-box; /* 确保padding和border包含在元素的总宽度和高度内 */
+}
+
+.about section.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start; /* 改为flex-start以使项目靠左对齐 */
+  gap: 40px;
+  padding: 0 50px; /* 左右各50px的内边距 */
+  margin: 0 auto; /* 自动的左右外边距，使元素居中 */
+  box-sizing: border-box;
+  max-width: 1720px; /* 根据需要设定最大宽度 */
+  width: 100%; /* 占满父容器宽度 */
+}
+
+.about .content {
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+} 
+
+.about .kowsky-plaza-glass {
+  position: relative;
+  width: 100px;
+  height: 140px;
+}
+
+.about article.portfolio-item {
+  display: flex;
+  flex-direction: column;
+  width: 390px;
+  align-items: flex-start;
+  position: relative;
+  background-color: var(--color-background-neutral-default);
+  height: 140px; /* 设置固定高度 */
+  overflow: auto; /* 如果内容超出容器高度，则显示滚动条 */
+}
+
+.about article.about-bio {
+  width: 760px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  position: relative;
+}
+
+.about .bio-content {
+  padding: 0px 0px 5px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start; /* 如果目的是垂直居中子元素 */
+  gap: 10px;
+  /* position: relative; */ /* 除非确实需要，否则可以移除 */
+}
+
+.about .contact-info p,
+.about .software-skills p,
+.about .about-bio-paragraph {
+  position: relative;
+  max-width: 760px; /* 使用max-width以适应不同屏幕尺寸 */
+  font-family: var(--body-code-font-family);
+  font-weight: var(--body-code-font-weight);
+  color: var(--color-text-brand-default);
+  font-size: var(--body-code-font-size);
+  letter-spacing: var(--body-code-letter-spacing);
+  line-height: var(--body-code-line-height);
+  font-style: var(--body-code-font-style);
+}
+
+.about .contact-info,
+.about .software-skills{
+  position: relative;
+  width: 760px;
+  font-family: var(--body-small-strong-font-family);
+  font-weight: var(--body-small-strong-font-weight);
+  color: var(--color-text-brand-on-brand-secondary);
+  font-size: var(--body-small-strong-font-size);
+  letter-spacing: var(--body-small-strong-letter-spacing);
+  line-height: var(--body-small-strong-line-height);
+  font-style: var(--body-small-strong-font-style);
+}
+
+/* 特定于email链接的样式 */
+.about .contact-info p{
+  color: #ec221f; 
+}
+
+
+
+/* 响应式设计 */
+@media (max-width: 1310px) {
+  .about section.container {
+    padding: 0 40px; /* 减少内边距 */
+  }
+  .about article.about-bio {
+    width: 100%; /* 使用全宽 */
+    box-sizing: border-box; /* 确保padding不会增加总宽度 */
+  }
+}
+
+@media (max-width: 900px) {
+  .about section.container {
+    padding: 0 30px; /* 进一步减少内边距 */
+  }
+}
+
+@media (max-width: 490px) {
+  .about section.container {
+    padding: 0 20px; /* 更进一步减少内边距 */
+  }
+}

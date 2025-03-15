@@ -1,0 +1,81 @@
+:root {
+  --heading-font-family: "Inter", Helvetica;
+  --heading-font-weight: 600;
+  --heading-font-size: 24px;
+  --heading-letter-spacing: 0px;
+  --heading-line-height: 120%;
+  --heading-font-style: normal;
+  --single-line-body-base-font-family: "Inter", Helvetica;
+  --single-line-body-base-font-weight: 400;
+  --single-line-body-base-font-size: 16px;
+  --single-line-body-base-letter-spacing: 0px;
+  --single-line-body-base-line-height: 100%;
+  --single-line-body-base-font-style: normal;
+  --body-code-font-family: "Roboto Mono", Helvetica;
+  --body-code-font-weight: 400;
+  --body-code-font-size: 16px;
+  --body-code-letter-spacing: 0px;
+  --body-code-line-height: 100%;
+  --body-code-font-style: normal;
+  --body-small-strong-font-family: "Inter", Helvetica;
+  --body-small-strong-font-weight: 600;
+  --body-small-strong-font-size: 14px;
+  --body-small-strong-letter-spacing: 0px;
+  --body-small-strong-line-height: 140%;
+  --body-small-strong-font-style: normal;
+  --color-background-default-default: var(--color-primitives-white-1000);
+  --color-text-brand-default: var(--color-primitives-brand-800);
+  --color-text-brand-tertiary: var(--color-primitives-brand-500);
+  --color-text-brand-on-brand-secondary: var(--color-primitives-brand-900);
+  --color-background-neutral-default: var(--color-primitives-slate-700);
+  --color-primitives-white-1000: rgba(255, 255, 255, 1);
+  --color-primitives-brand-800: rgba(44, 44, 44, 1);
+  --color-primitives-brand-500: rgba(117, 117, 117, 1);
+  --color-primitives-brand-900: rgba(30, 30, 30, 1);
+  --color-primitives-slate-700: rgba(90, 90, 90, 1);
+  --color-primitives-gray-900: rgba(30, 30, 30, 1);
+  --color-primitives-brand-400: rgba(179, 179, 179, 1);
+  --color-primitives-brand-100: rgba(245, 245, 245, 1);
+  --title-page-font-family: "Roboto Mono", Helvetica;
+  --title-page-font-weight: 700;
+  --title-page-font-size: 48px;
+  --title-page-letter-spacing: 0px;
+  --title-page-line-height: 120%;
+  --title-page-font-style: normal;
+  --Subheading-font-family: "Roboto Mono", Helvetica;
+  --Subheading-font-weight: 400;
+  --Subheading-font-size: 20px;
+  --Subheading-letter-spacing: 0px;
+  --Subheading-line-height: 120%;
+  --Subheading-font-style: normal;
+}
+
+body {
+  font-family: var(--single-line-body-base-font-family);
+}
+
+/*
+
+To enable a theme in your HTML, simply add one of the following data attributes to an HTML element, like so:
+
+<body data-color-mode="SDS-light">
+      <!-- the rest of your content -->
+</body>
+
+You can apply the theme on any DOM node, not just the `body`
+
+*/
+
+[data-color-mode="SDS-light"] {
+  --color-background-default-default: var(--color-primitives-white-1000);
+  --color-text-brand-default: var(--color-primitives-brand-800);
+  --color-text-brand-on-brand-secondary: var(--color-primitives-brand-900);
+  --color-text-brand-tertiary: var(--color-primitives-brand-500);
+}
+
+[data-color-mode="SDS-dark"] {
+  --color-background-default-default: var(--color-primitives-gray-900);
+  --color-text-brand-default: var(--color-primitives-brand-100);
+  --color-text-brand-on-brand-secondary: var(--color-primitives-brand-100);
+  --color-text-brand-tertiary: var(--color-primitives-brand-400);
+}
