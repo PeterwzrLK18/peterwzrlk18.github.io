@@ -72,9 +72,10 @@
     width: calc(50% - 10px);
     gap: 20px; /* B和C之间的间隔 */
     max-width: 800px;
+    justify-content: space-between;
 }
 
-.work-img-containerb, .work-img-containerbc {
+.work-img-container b, .work-img-container c {
     flex: 1; /* 让B和C的高度自动扩展 */
 }
 
@@ -119,9 +120,11 @@
     transition: opacity 0.3s ease; /* 平滑过渡效果 */
     z-index: 10; /* 确保按钮在图片上方 */
 }
-  
-  /* 当鼠标悬停在.work-img上时，显示按钮 */
-  .work-img-container:hover .enlarge-btn {
+
+/* 当鼠标悬停在.work-img上时，显示按钮 */
+.work-img-container:hover .enlarge-btn,
+.work-img-container b:hover .enlarge-btn,
+.work-img-container c:hover .enlarge-btn {
     opacity: 1; /* 显示按钮 */
 }
 

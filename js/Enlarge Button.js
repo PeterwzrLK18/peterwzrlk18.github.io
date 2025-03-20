@@ -46,8 +46,8 @@ document.addEventListener('DOMContentLoaded', function() {
         captionText.innerHTML = alt;
 
         // 清除可能存在的淡出动画类，并通过短暂延迟后添加淡入动画类
-        //modal.classList.remove('fade-out');
-        //setTimeout(() => modal.classList.add('fade-in'), 10); // 小延迟确保重绘
+        modal.classList.remove('fade-out');
+        setTimeout(() => modal.classList.add('fade-in'));// 小延迟确保重绘
 
         // 点击关闭按钮时隐藏模态框
         modal.querySelector('.close').onclick = function() {
