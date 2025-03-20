@@ -13,8 +13,13 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        // 添加点击事件监听器到按钮上
         button.addEventListener('click', function(event) {
-            console.log(`Button clicked, opening modal for image src: ${img.src}`);
+            openModal(img.src, img.alt);
+        });
+
+        // 同样为图片添加点击事件监听器
+        img.addEventListener('click', function(event) {
             openModal(img.src, img.alt);
         });
     });
@@ -40,6 +45,10 @@ document.addEventListener('DOMContentLoaded', function() {
         modalImg.src = src;
         captionText.innerHTML = alt;
 
+        // 清除可能存在的淡出动画类，并通过短暂延迟后添加淡入动画类
+        //modal.classList.remove('fade-out');
+        //setTimeout(() => modal.classList.add('fade-in'), 10); // 小延迟确保重绘
+
         // 点击关闭按钮时隐藏模态框
         modal.querySelector('.close').onclick = function() {
             console.log("Close button clicked");
@@ -53,10 +62,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 closeModal(modal);
             }
         }
+
+        // 添加按键事件监听器以支持通过ESC键关闭模态框
+        document.onkeydown = function(evt) {
+            evt = evt || window.event;
+            if (evt.key === "Escape" || evt.keyCode === 27) {
+                console.log("Escape key pressed, closing modal");
+                closeModal(modal);
+            }
+        };
     }
 
     function closeModal(modal) {
         console.log("Closing modal");
-        modal.style.display = "none";
+
+        // 移除淡入动画类并添加淡出动画类
+        //modal.classList.remove('fade-in');
+        //modal.classList.add('fade-out');
+
+        // 在动画完成后隐藏模态框
+        setTimeout(() => {
+            modal.style.display = "none";
+        }, 350); // 动画持续时间应与CSS中的设置匹配
+
+        // 移除按键事件监听器
+        document.onkeydown = null;
     }
 });

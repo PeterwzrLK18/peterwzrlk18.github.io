@@ -72,6 +72,42 @@ a {
   color: var(--color-primitives-brand-900);
 }
 
+/* 设置图片和按钮的鼠标指针样式 */
+.work-img-container {
+    cursor: pointer; /* 使用手型指针表示可点击 */
+}
+
+
+/* 定义淡入动画：从透明到完全不透明 */
+@keyframes fadeIn {
+  from { opacity: 0; } /* 动画开始时元素是完全透明的 */
+  to { opacity: 1; }   /* 动画结束时元素变为完全不透明 */
+}
+
+/* 定义淡出动画：从完全不透明到透明 */
+@keyframes fadeOut {
+  from { opacity: 1; } /* 动画开始时元素是完全不透明的 */
+  to { opacity: 0; }   /* 动画结束时元素变为完全透明 */
+}
+
+/* 当模态框显示时应用的类，触发淡入动画 */
+#modal.fade-in {
+  animation: fadeIn 0.35s ease-out; /* 持续时间为0.3秒，使用ease-out缓动函数 */
+}
+
+/* 当模态框隐藏时应用的类，触发淡出动画 */
+#modal.fade-out {
+  animation: fadeOut 0.35s ease-out; /* 持续时间为0.3秒，使用ease-out缓动函数 */
+}
+
+/* 默认情况下隐藏模态框 */
+#modal {
+  display: none; /* 初始状态下模态框不可见 */
+  /* 其他样式属性... */
+}
+
+
+
 /* 响应式设计：小屏幕下的样式 */
 @media (max-width: 500px) {
   /* 调整navigation的padding以适应小屏幕 */
