@@ -22,7 +22,7 @@
 
 /* 关闭按钮样式 */
 .close {
-    position: absolute;
+    position: fixed;
     top: 20px;
     right: 30px;
     color: #f1f1f1;
@@ -60,6 +60,12 @@
     display: none;  /* 默认情况下隐藏滚动条（Safari和Chrome） */
 }
 
+/* 当添加.show-scrollbar类时，显示滚动条 */
+.show-scrollbar .scrollbar-container {
+    opacity: 1;
+    pointer-events: auto; /* 允许鼠标交互 */
+}
+
 
 
 /* 标题/说明文本 */
@@ -79,9 +85,37 @@
 
 /* 模态框中的图片 */
 .modal-content {
-    max-width: 100%;   
+    max-width: min(1720px, 90vw); /* 动态限制 */
     width: auto;
     height: auto;
-    object-fit: contain; /* 保持图片比例并适应容器 */
-    max-width: 1720px; /* 确保图片的最大宽度 */
+    object-fit: contain;
+}
+
+/* 滚动条容器 */
+.scrollbar-container {
+    position: absolute;
+    top: 0;
+    right: -20px; /* 位于图片右侧外部 */
+    height: 100%;
+    width: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none; /* 默认不响应鼠标 */
+}
+
+/* 滚动条滑块 */
+.scrollbar-thumb {
+    position: absolute;
+    width: 100%;
+    background: rgba(255,255,255,0.6);
+    border-radius: 4px;
+    cursor: grab;
+    transition: height 0.2s;
+}
+
+/* 拖动状态 */
+.scrollbar-thumb:active {
+    cursor: grabbing;
 }
