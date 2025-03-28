@@ -54,6 +54,23 @@ body {
   font-family: var(--single-line-body-base-font-family);
 }
 
+/* 定义可变字体 */
+/* 定义 Regular 可变字体 */
+@font-face {
+  font-family: "Roboto Mono";
+  src: url("/fonts/RobotoMono-VariableFont_wght.ttf") format("truetype");
+  font-weight: 100 700; /* 支持的字重范围：100 到 700 */
+  font-style: normal; /* 常规样式 */
+}
+
+/* 定义 Italic 可变字体 */
+@font-face {
+  font-family: "Roboto Mono";
+  src: url("/fonts/RobotoMono-Italic-VariableFont_wght.ttf") format("truetype");
+  font-weight: 100 700; /* 支持的字重范围：100 到 700 */
+  font-style: italic; /* 斜体样式 */
+}
+
 /*
 
 To enable a theme in your HTML, simply add one of the following data attributes to an HTML element, like so:
