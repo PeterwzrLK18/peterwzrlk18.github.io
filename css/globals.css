@@ -132,7 +132,7 @@ a {
 }
 
 @media (max-width: 1310px) {
-  .home .navigation {
+  .navigation {
     padding: 30px 40px; /* 调整padding以适应更大的屏幕尺寸 */
   }
   .home .container {
@@ -141,7 +141,7 @@ a {
 }
 
 @media (max-width: 900px) {
-  .home .navigation {
+  .navigation {
     padding: 30px 30px; /* 调整padding以适应更大的屏幕尺寸 */
   }
   .home .works {
@@ -153,7 +153,7 @@ a {
 }
 
 @media (max-width: 490px) {
-  .home .navigation {
+  .navigation {
     padding: 30px 20px; /* 调整padding以适应更大的屏幕尺寸 */
   }
   .home .works {
