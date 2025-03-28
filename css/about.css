@@ -79,7 +79,7 @@
   color: var(--color-text-brand-default);
   font-size: var(--body-code-font-size);
   letter-spacing: var(--body-code-letter-spacing);
-  line-height: var(--body-code-line-height);
+  line-height: var(--body-small-strong-line-height);
   font-style: var(--body-code-font-style);
 }
 
