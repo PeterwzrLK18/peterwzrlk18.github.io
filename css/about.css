@@ -31,6 +31,7 @@
   align-self: stretch;
   width: 100%;
   flex: 0 0 auto;
+  background-color: var(--color-background-neutral-default);
 } 
 
 .about .kowsky-plaza-glass {
@@ -39,15 +40,19 @@
   height: 140px;
 }
 
+.about .good-luck {
+  position: relative;
+  max-width: 100%;
+}
+
 .about article.portfolio-item {
   display: flex;
   flex-direction: column;
   width: 390px;
   align-items: flex-start;
   position: relative;
-  background-color: var(--color-background-neutral-default);
-  height: 140px; /* 设置固定高度 */
   overflow: auto; /* 如果内容超出容器高度，则显示滚动条 */
+  gap: 20px;
 }
 
 .about article.about-bio {
