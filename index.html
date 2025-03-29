@@ -8,6 +8,9 @@
         <link rel="stylesheet" type="text/css" href="/css/globals.css">
         <link rel="stylesheet" type="text/css" href="/css/index.css">
         <link rel="stylesheet" type="text/css" href="/css/styleguide.css">
+
+        <!-- 预加载 navbar.html -->
+        <link rel="preload" href="/navbar.html" as="fetch" crossorigin="anonymous">
     </head>
     <body>
         <div class="home">
@@ -66,7 +69,18 @@
                 .then(html => {
                     document.getElementById('navbar-container').innerHTML = html;
                 })
-                .catch(error => console.error('Error loading navigation bar:', error));
+                .catch(error => {
+                    console.error('Error loading navigation bar:', error);
+                    // 提供备用导航栏
+                    document.getElementById('navbar-container').innerHTML = `
+                        <nav>
+                            <a href="/">Home</a> |
+                            <a href="/about">About</a> |
+                            <a href="/portfolio">Portfolio</a> |
+                            <a href="/contact">Contact</a>
+                        </nav>
+                    `;
+                });
         </script>
     </body>
 </html>
