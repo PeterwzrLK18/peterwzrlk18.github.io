@@ -92,7 +92,9 @@
 .about .contact-info,
 .about .software-skills{
   position: relative;
-  width: 760px;
+  width: 100%;
+  max-width: 760px; /* 保持与其他元素一致的最大宽度 */
+  box-sizing: border-box; /* 确保 padding 不会让宽度超出 */
   font-family: var(--body-small-strong-font-family);
   font-weight: var(--body-small-strong-font-weight);
   color: var(--color-text-brand-on-brand-secondary);
