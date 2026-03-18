@@ -1,0 +1,119 @@
+/* 特定于WORK链接的样式 */
+.nav-item.workbutton a {
+  color: var(--color-primitives-brand-900); /* WORK链接的颜色 */
+}
+
+/* 定义.works的基本样式 */
+.home .works {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start; /* 改为flex-start以使项目靠左对齐 */
+  gap: 10px 20px;
+  margin: 0 auto; /* 自动的左右外边距，使元素居中 */
+  box-sizing: border-box;
+  max-width: 1720px; /* 根据需要设定最大宽度 */
+  width: 100%; /* 占满父容器宽度 */
+  height: 100%; /* 占满父容器高度 */
+  padding: 0 50px 0 50px; /* 左右内边距 */
+}
+
+/* 使用伪元素占满剩余空间 */
+.home .works::after {
+  content: '';
+  flex: auto; /* 或者使用 flex-grow: 1; */
+}
+
+/* 定义.sector-item的基本样式 */
+.home .sector-item {
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 390 / 250; /* 设置固定宽高比 */
+  align-items: flex-start;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.home .sector-item:hover {
+  transform: scale(1.03); /* 鼠标悬停时放大 */
+}
+
+/* 当鼠标悬停在.sector-item上时，.work-title显示下划线 */
+.home .sector-item:hover .work-title {
+    text-decoration: underline;
+}
+
+/* 定义.work-title的基本样式 */
+.home .work-title {
+  display: flex; /* 使用flex布局 */
+  height: 50px; /* 固定高度 */
+  align-items: center; /* 子元素垂直居中 */
+  gap: 10px; /* 子元素之间的间距 */
+  position: relative; /* 相对定位 */
+  font-family: var(--heading-font-family); /* 字体家族 */
+  font-weight: var(--heading-font-weight); /* 字体粗细 */
+  color: var(--color-text-brand-default); /* 文字颜色 */
+  font-size: var(--heading-font-size); /* 字体大小 */
+  letter-spacing: var(--heading-letter-spacing); /* 字母间距 */
+  line-height: var(--heading-line-height); /* 行高 */
+  white-space: nowrap; /* 防止文本换行 */
+  font-style: var(--heading-font-style); /* 字体样式 */
+  transition: color 0.3s ease; /* 平滑的颜色过渡效果 */
+}
+
+
+
+/* 定义.content的基本样式 */
+.home .content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%; /* 使用百分比高度 */
+  position: relative;
+  box-sizing: border-box;
+}
+  
+/* 定义.img的基本样式 */
+.home .img {
+  width: 100%; /* 图片宽度为容器宽度 */
+  height: 100%; /* 图片高度为容器高度 */
+  object-fit: cover; /* 确保图片覆盖整个容器，不拉伸 */
+  max-width: 390px; /* 图片最大宽度 */
+  max-height: 250px; /* 图片最大高度 */
+}
+
+
+
+/* 默认情况下每行4个项目 */
+.home .sector-link {
+  width: calc(25% - 15px); /* 每个项目占据25%的宽度，减去间隙 */
+}
+
+/* 响应式设计 */
+@media (max-width: 1310px) {
+  .home .sector-link {
+    width: calc(33.333% - 13.333px); /* 每行3个项目，减去间隙 */
+  }
+  .home .works {
+    padding: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .home .sector-link {
+    width: calc(50% - 10px); /* 每行2个项目，减去间隙 */
+  }
+}
+
+@media (max-width: 490px) {
+  .home .sector-link {
+    width: 100%; /* 每行1个项目 */
+  }
+}
+
+/* 包裹title-img卡片 */
+.sector-link {
+  display: block; /* 或者使用 inline-block 如果需要 */
+  text-decoration: none;
+  color: inherit;
+  box-sizing: border-box;
+}

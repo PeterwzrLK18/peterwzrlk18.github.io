@@ -1,0 +1,121 @@
+/* 禁止页面滚动 */
+.no-scroll {
+    overflow: hidden;
+}
+
+/* 确保模态框默认隐藏 */
+#modal.modal {
+    display: none; /* 默认隐藏模态框 */
+    position: fixed; /* 固定定位 */
+    z-index: 1000; /* 设置较高的z-index值 */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.8); /* 半透明背景 */
+    justify-content: center; /* 垂直居中 */
+    align-items: center; /* 水平居中 */
+    padding: 20px; /* 内边距 */
+    box-sizing: border-box; /* 包含内边距和边框 */
+    flex-direction: column; /* 改为垂直布局 */
+}
+
+/* 关闭按钮样式 */
+.close {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+    color: #f1f1f1;
+    font-size: 40px;
+    transition: 0.3s;
+    cursor: pointer;
+    z-index: 1001; /* 确保关闭按钮始终在最前面 */
+}
+
+.close:hover,
+.close:focus {
+    color: #bbb;
+    text-decoration: none;
+}
+
+
+
+/* 模态框内容容器 */
+.modal-content-container {
+    display: flex;
+    position: relative; /* 使滚动条容器可以相对于此容器进行绝对定位 */
+    align-items: center; 
+    flex-direction: column; /* 改为垂直布局 */
+    max-width: 1720px; /* 或者指定一个具体的宽度，例如：width: 800px; */
+    width: auto; /* 根据内容自动调整宽度 */
+    overflow-y: auto; /* 当内容超出容器高度时启用垂直滚动 */
+    box-sizing: border-box; /* 确保padding和border包含在max-width和max-height内 */
+
+    /* 隐藏滚动条 */
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.modal-content-container::-webkit-scrollbar { 
+    display: none;  /* 默认情况下隐藏滚动条（Safari和Chrome） */
+}
+
+/* 当添加.show-scrollbar类时，显示滚动条 */
+.show-scrollbar .scrollbar-container {
+    opacity: 1;
+    pointer-events: auto; /* 允许鼠标交互 */
+}
+
+
+
+/* 标题/说明文本 */
+#caption {
+    text-align: center;
+    margin-bottom: 20px; /* 在caption下方添加一些间距 */
+    word-wrap: break-word; /* 防止长单词溢出 */
+    width: 100%; /* 确保caption占据整个容器宽度 */
+    font-family: var(--Subheading-font-family);
+    font-weight: var(--Subheading-font-weight);
+    color: var(--color-primitives-white-1000);
+    font-size: var(--Subheading-font-size);
+    letter-spacing: var(--Subheading-letter-spacing);
+    line-height: var(--Subheading-line-height);
+    font-style: var(--Subheading-font-style);
+}
+
+/* 模态框中的图片 */
+.modal-content {
+    max-width: min(1720px, 90vw); /* 动态限制 */
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+/* 滚动条容器 */
+.scrollbar-container {
+    position: absolute;
+    top: 0;
+    right: -20px; /* 位于图片右侧外部 */
+    height: 100%;
+    width: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none; /* 默认不响应鼠标 */
+}
+
+/* 滚动条滑块 */
+.scrollbar-thumb {
+    position: absolute;
+    width: 100%;
+    background: rgba(255,255,255,0.6);
+    border-radius: 4px;
+    cursor: grab;
+    transition: height 0.2s;
+}
+
+/* 拖动状态 */
+.scrollbar-thumb:active {
+    cursor: grabbing;
+}
