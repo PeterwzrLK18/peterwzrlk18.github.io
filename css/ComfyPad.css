@@ -102,10 +102,23 @@
     max-height: 450px;
 }
 
+.section-img {
+    display: flex;
+    justify-content: center;
+    box-sizing: border-box;
+    max-width: 1720px;
+    width: 100%;
+}
+
+.section-img .sector-item {
+    width: 100%;
+}
+
  /*确认父容器的相对定位 */
  .work-img-container {
     position: relative;
     display: inline-block; /* 确保容器仅占据必要的空间 */
+    width: 100%;
 }
 
 .poster-img {
@@ -113,6 +126,14 @@
     height: auto; /* 图片高度自适应 */
     display: block; /* 移除图片下方默认的空白间隙 */
     object-fit: contain; /* 确保图片覆盖整个区域 */
+}
+
+/* 让嵌入式视频与图片一样按父容器宽度自适应，并保持常见视频纵横比 */
+.work-img-container iframe.poster-img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    border: none;
 }
 
 .enlarge-btn {
