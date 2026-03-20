@@ -114,7 +114,18 @@
     width: 100%;
 }
 
- /*确认父容器的相对定位 */
+/* 让每组 feature + 图块 之间空 12vh，末组不加 */
+.section-2img,
+.section-img {
+    margin-bottom: 4vh;
+}
+
+.section-2img:last-of-type,
+.section-img:last-of-type {
+    margin-bottom: 0;
+}
+
+/* 确认父容器的相对定位 */
  .work-img-container {
     position: relative;
     display: inline-block; /* 确保容器仅占据必要的空间 */
