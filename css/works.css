@@ -1,0 +1,183 @@
+/* Shared styles for all work detail pages */
+.nav-item.workbutton a {
+    color: var(--color-primitives-brand-900);
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 0 50px;
+    margin: 0 auto 30px auto;
+    box-sizing: border-box;
+    max-width: 1720px;
+    width: 100%;
+}
+
+.self-identity {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    box-sizing: border-box;
+    max-width: 1720px;
+    width: 100%;
+}
+
+.title {
+    font-family: var(--heading-font-family);
+    font-weight: var(--title-page-font-weight);
+    color: var(--color-primitives-brand-900);
+    font-size: var(--title-page-font-size);
+    letter-spacing: var(--title-page-letter-spacing);
+    line-height: var(--title-page-line-height);
+    font-style: var(--title-page-font-style);
+    max-width: 800px;
+}
+
+.title .worksubtitle {
+    font-family: var(--Subheading-font-family);
+    font-weight: var(--Subheading-font-weight);
+    color: var(--color-primitives-brand-500);
+    font-size: var(--Subheading-font-size);
+    letter-spacing: var(--Subheading-letter-spacing);
+    line-height: var(--Subheading-line-height);
+    font-style: var(--Subheading-font-style);
+}
+
+.description {
+    font-family: var(--heading-font-family);
+    font-weight: var(--heading-font-weight);
+    color: var(--color-text-brand-default);
+    font-size: var(--heading-font-size);
+    letter-spacing: var(--heading-letter-spacing);
+    line-height: var(--heading-line-height);
+    font-style: var(--heading-font-style);
+    max-width: 800px;
+}
+
+.feature-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    box-sizing: border-box;
+    max-width: 1720px;
+    width: 100%;
+}
+
+.feature {
+    display: flex;
+    width: 50%;
+}
+
+.featuretitle {
+    font-family: var(--heading-font-family);
+    font-weight: var(--heading-font-weight);
+    color: var(--color-text-brand-tertiary);
+    font-size: var(--heading-font-size);
+    letter-spacing: var(--title-page-letter-spacing);
+    line-height: var(--title-page-line-height);
+    font-style: var(--title-page-font-style);
+}
+
+.section-2img {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: 20px;
+    box-sizing: border-box;
+    max-width: 1720px;
+    width: 100%;
+}
+
+.section-2img .sector-item {
+    width: calc(50% - 10px);
+    height: auto;
+    box-sizing: border-box;
+}
+
+.section-img {
+    display: flex;
+    justify-content: center;
+    box-sizing: border-box;
+    max-width: 1720px;
+    width: 100%;
+}
+
+.section-img .sector-item {
+    width: 100%;
+}
+
+.work-img-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    cursor: pointer;
+}
+
+.poster-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+}
+
+.work-img-container iframe.poster-img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    border: none;
+}
+
+.enlarge-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 8px 10px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 10;
+}
+
+.work-img-container:hover .enlarge-btn {
+    opacity: 1;
+}
+
+@media (max-width: 900px) {
+    .section-2img {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .section-2img .sector-item {
+        width: 100%;
+        height: auto;
+        padding: 0;
+        box-sizing: border-box;
+    }
+}
+
+/* Per-work overrides for ComfyPad/Form of Vertebra/Starseeker pages */
+.section-2img .sector-item {
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-height: 450px;
+}
+
+/* Add vertical rhythm between image sections on these pages */
+.section-2img,
+.section-img {
+    margin-bottom: 1.5vh;
+}
+
+.section-2img:last-of-type,
+.section-img:last-of-type {
+    margin-bottom: 0;
+}
