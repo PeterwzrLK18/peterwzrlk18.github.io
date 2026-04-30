@@ -110,6 +110,18 @@
   }
 }
 
+@media (max-width: 768px) {
+  .home .container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .home .works {
+    padding-left: var(--side-padding);
+    padding-right: var(--side-padding);
+  }
+}
+
 /* 包裹title-img卡片 */
 .sector-link {
   display: block; /* 或者使用 inline-block 如果需要 */

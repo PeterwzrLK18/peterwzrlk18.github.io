@@ -139,3 +139,17 @@
     padding: 0 20px; /* 更进一步减少内边距 */
   }
 }
+
+@media (max-width: 768px) {
+  .about section.container {
+    padding: 0 var(--side-padding);
+  }
+
+  .about .contact-info p,
+  .about .about-bio-paragraph,
+  .about .software-skills p {
+    font-size: var(--fs-body);
+    line-height: var(--lh-normal);
+    word-break: break-word;
+  }
+}

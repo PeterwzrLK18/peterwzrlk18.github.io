@@ -181,3 +181,50 @@
 .section-img:last-of-type {
     margin-bottom: 0;
 }
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 var(--side-padding);
+    }
+
+    .title {
+        font-size: var(--fs-h1);
+        line-height: var(--lh-tight);
+        letter-spacing: -0.02em;
+        font-weight: 800;
+    }
+
+    .title b {
+        font-size: inherit;
+        line-height: inherit;
+        letter-spacing: inherit;
+        font-weight: inherit;
+    }
+
+    .featuretitle {
+        font-size: var(--fs-h2);
+        line-height: 1.2;
+        margin-top: var(--section-spacing);
+    }
+
+    .feature {
+        width: clamp(50%, 62vw, 75%);
+    }
+
+    .title .worksubtitle {
+        font-size: 12px;
+        font-weight: 400;
+        letter-spacing: 0.02em;
+        color: #7a7a7a;
+        margin-top: 6px;
+        margin-bottom: 10px;
+    }
+
+    .description,
+    p.description,
+    .description-text {
+        font-size: var(--fs-body);
+        line-height: var(--lh-normal);
+        word-break: break-word;
+    }
+}

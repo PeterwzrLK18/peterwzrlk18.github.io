@@ -48,6 +48,18 @@
   --Subheading-letter-spacing: 0px;
   --Subheading-line-height: 120%;
   --Subheading-font-style: normal;
+
+  /* Mobile typography system */
+  --fs-h1: 28px;
+  --fs-h2: 20px;
+  --fs-sub: 15px;
+  --fs-body: 16px;
+  --fs-nav: 12px;
+  --lh-tight: 1.1;
+  --lh-normal: 1.5;
+  --section-spacing: 48px;
+  --text-spacing: 12px;
+  --side-padding: 20px;
 }
 
 body {
@@ -95,4 +107,27 @@ You can apply the theme on any DOM node, not just the `body`
   --color-text-brand-default: var(--color-primitives-brand-100);
   --color-text-brand-on-brand-secondary: var(--color-primitives-brand-100);
   --color-text-brand-tertiary: var(--color-primitives-brand-400);
+}
+
+@media (max-width: 768px) {
+  :root {
+    --section-spacing: 24px;
+  }
+}
+
+@media (max-width: 490px) {
+  :root {
+    --fs-h1: 25px;
+    --fs-h2: 18px;
+    --fs-sub: 14px;
+    --section-spacing: 20px;
+  }
+}
+
+@media (max-width: 390px) {
+  :root {
+    --fs-h1: 23px;
+    --fs-h2: 17px;
+    --side-padding: 16px;
+  }
 }
