@@ -4,7 +4,30 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="description" content="Likai Wang's portfolio showcasing his work and experience.">
+        <meta name="keywords" content="portfolio, design, web development, Likai Wang">
+        <meta name="author" content="Likai Wang">
         <title>Portfolio - Likai Wang</title>
+
+        <!-- Favicon -->
+        <link rel="icon" type="image/png" href="%PUBLIC_URL%/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="%PUBLIC_URL%/favicon.svg" />
+        <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/apple-touch-icon.png" />
+        <link rel="manifest" href="%PUBLIC_URL%/site.webmanifest" />
+
+        <!-- Open Graph -->
+        <meta property="og:title" content="Portfolio - Likai Wang">
+        <meta property="og:description" content="Showcasing my work and experience in design and development.">
+        <meta property="og:image" content="/img/home/comfypad-img.png">
+        <meta property="og:url" content="https://peterwzrlk18.github.io">
+        <meta property="og:type" content="website">
+
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="Portfolio - Likai Wang">
+        <meta name="twitter:description" content="Showcasing my work and experience.">
+        <meta name="twitter:image" content="/img/home/comfypad-img.png">
+
         <link rel="stylesheet" type="text/css" href="/css/globals.css">
         <link rel="stylesheet" type="text/css" href="/css/shared.css">
         <link rel="stylesheet" type="text/css" href="/css/index.css">
@@ -14,88 +37,29 @@
         <link rel="preload" href="/navbar.html" as="fetch" crossorigin="anonymous">
     </head>
     <body>
+        <a href="#main-content" class="sr-only">Skip to main content</a>
         <div class="home">
-            <header>  
+            <header>
                 <div id="navbar-container"></div>
             </header>
-            
-            <div class="container">
-                <div class="works">
-                    <a href="/works/Wilderness Rescue.html" class="sector-link">
-                        <article class="sector-item">
-                            <h2 class="work-title">Wilderness Rescue</h2>
-                            <div class="content">
-                                <img class="img" src="/img/home/uav-rescue-plan-img.png" alt="Wilderness Rescue Project Image">
-                            </div>
-                        </article>
-                    </a>
-                    <a href="/works/Starseeker.html" class="sector-link">
-                        <article class="sector-item">
-                            <h2 class="work-title">Orb: Starseeker</h2>
-                            <div class="content">
-                                <img class="img" src="/img/home/starseeker-img.png" alt="Starseeker Project Image">
-                            </div>
-                        </article>
-                    </a>
-                    <a href="/works/Form of Vertebra.html" class="sector-link">
-                        <article class="sector-item">
-                            <h2 class="work-title">Form of Vertebra</h2>
-                            <div class="content">
-                                <img class="img" src="/img/home/form-of-vertebra-img.png" alt="Form of Vertebra Project Image">
-                            </div>
-                        </article>
-                    </a>
-                    <a href="/works/ComfyPad.html" class="sector-link">
-                        <article class="sector-item">
-                            <h2 class="work-title">ComfyPad</h2>
-                            <div class="content">
-                                <img class="img" src="/img/home/comfypad-img.png" alt="ComfyPad Project Image">
-                            </div>
-                        </article>
-                    </a>
-                    <a href="/works/NYBS.html" class="sector-link">
-                        <article class="sector-item">
-                            <h2 class="work-title">NYBS</h2>
-                            <div class="content">
-                                <img class="img" src="/img/home/nybs-img.png" alt="NYBS Project Image">
-                            </div>
-                        </article>
-                    </a>
-                    <a href="/works/Cellphone info.html" class="sector-link">
-                        <article class="sector-item">
-                            <h2 class="work-title">Cellphone info</h2>
-                            <div class="content">
-                                <img class="img" src="/img/home/cellphone-info-img.png" alt="Cellphone Info Image">
-                            </div>
-                        </article>
-                    </a>
-                    <a href="/works/Italian cookbook.html" class="sector-link">
-                        <article class="sector-item">
-                            <h2 class="work-title">Cookbook</h2>
-                            <div class="content">
-                                <img class="img" src="/img/home/italian-cookbook-img.png" alt="Italian Cookbook Image">
-                            </div>
-                        </article>
-                    </a>
-                    <a href="/works/SONDER.html" class="sector-link">
-                        <article class="sector-item">
-                            <h2 class="work-title">SONDER</h2>
-                            <div class="content">
-                                <img class="img" src="/img/home/sonder-img.png" alt="SONDER Image">
-                            </div>
-                        </article>
-                    </a>
-                    <a href="/works/Plagiarism.html" class="sector-link">
-                        <article class="sector-item">
-                            <h2 class="work-title">Plagiarism</h2>
-                            <div class="content">
-                                <img class="img" src="/img/home/plagiarism-img.png" alt="Plagiarism Image">
-                            </div>
-                        </article>
-                    </a>
-                </div>
-            </div>
+
+            <main id="main-content" class="container">
+                <section class="works" id="works-list"></section>
+            </main>
         </div>
         <script src="/js/navbar.js" defer></script>
+        <script type="module" src="/js/index-works.js" defer></script>
+
+        <!-- Schema.org 结构化数据 -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Person",
+          "name": "Likai Wang",
+          "url": "https://peterwzrlk18.github.io",
+          "sameAs": ["https://github.com/peterwzrlk18"],
+          "knowsAbout": ["Web Design", "UI/UX", "Frontend Development"]
+        }
+        </script>
     </body>
 </html>
