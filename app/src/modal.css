@@ -1,0 +1,157 @@
+/* 模态灯箱 - Phase 5 重建版 */
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+.modal-close {
+  position: fixed;
+  top: 16px;
+  right: 24px;
+  background: none;
+  border: none;
+  color: #f1f1f1;
+  font-size: 40px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 1001;
+  padding: 8px 12px;
+  transition: color 0.2s ease;
+}
+
+.modal-close:hover,
+.modal-close:focus-visible {
+  color: #fff;
+  outline: 2px solid #4a90e2;
+  outline-offset: 2px;
+}
+
+.modal-content-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  max-height: 100%;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.modal-content {
+  max-width: min(1720px, 92vw);
+  max-height: 88vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.18s ease-out;
+}
+
+.modal-content-loaded {
+  opacity: 1;
+}
+
+/* 长图:加 zoom-in 光标提示用户"长图模式"(实际 zoom 交互留给后续 Phase 5b) */
+.modal-long {
+  /* 容器级:无额外样式,只作 selector hook */
+}
+
+.modal-content-long {
+  cursor: zoom-in;
+  /* 切到全高度并允许垂直滚动,让长图细节可读 */
+  max-height: 88vh;
+  width: auto;
+}
+
+.modal-long-hint {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-family: var(--body-code-font-family);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  padding: 6px 12px;
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  white-space: nowrap;
+}
+
+/* 底部圆点导航 */
+.modal-dots {
+  position: fixed;
+  bottom: 24px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  z-index: 1001;
+}
+
+.modal-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-dot:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.modal-dot:focus-visible {
+  outline: 2px solid #4a90e2;
+  outline-offset: 2px;
+}
+
+/* 选中状态:更大、纯白 */
+.modal-dot-active {
+  width: 10px;
+  height: 10px;
+  background: #ffffff;
+}
+
+.modal-dot-active:hover {
+  background: #ffffff;
+}
+
+/* 无动画偏好用户禁用过渡 */
+@media (prefers-reduced-motion: reduce) {
+  .modal {
+    animation: none;
+  }
+  .modal-close,
+  .modal-close:hover,
+  .modal-dot,
+  .modal-dot:hover,
+  .modal-long-hint,
+  .modal-content {
+    transition: none;
+  }
+  .modal-content {
+    opacity: 1;
+  }
+}

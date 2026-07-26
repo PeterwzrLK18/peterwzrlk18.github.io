@@ -1,0 +1,33 @@
+/* Per-work overrides for NYBS page */
+.section-3img {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.left-sector-item {
+    width: calc(50% - 10px);
+}
+
+.right-sector-item {
+    display: flex;
+    flex-direction: column;
+    width: calc(50% - 10px);
+    gap: 20px;
+    max-width: 800px;
+}
+
+@media (max-width: 900px) {
+    .section-3img {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .left-sector-item,
+    .right-sector-item {
+        width: 100%;
+        gap: 10px;
+    }
+}

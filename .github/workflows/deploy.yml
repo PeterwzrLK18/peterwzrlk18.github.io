@@ -1,0 +1,54 @@
+name: Deploy app to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+# 让 gh-pages 部署有写权限(GITHUB_TOKEN 默认只读)
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: app/pnpm-lock.yaml
+
+      - name: Install app dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: ./app
+
+      - name: Lint
+        run: pnpm lint
+        working-directory: ./app
+
+      - name: Test
+        run: pnpm test
+        working-directory: ./app
+
+      - name: Build app
+        run: pnpm build
+        working-directory: ./app
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./app/dist
+          publish_branch: gh-pages
+          keep_files: false

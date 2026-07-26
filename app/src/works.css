@@ -1,0 +1,251 @@
+/* Shared styles for all work detail pages */
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--work-section-gap, 24px);
+    padding: 0 var(--side-padding);
+    margin: 0 auto 30px auto;
+    box-sizing: border-box;
+    max-width: 1720px;
+    width: 100%;
+}
+
+.self-identity {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    box-sizing: border-box;
+    max-width: 1720px;
+    width: 100%;
+}
+
+.title {
+    font-family: var(--heading-font-family);
+    font-weight: var(--title-page-font-weight);
+    color: var(--color-primitives-brand-900);
+    font-size: var(--title-page-font-size);
+    letter-spacing: var(--title-page-letter-spacing);
+    line-height: var(--title-page-line-height);
+    font-style: var(--title-page-font-style);
+    max-width: 800px;
+}
+
+.title .worksubtitle {
+    font-family: var(--Subheading-font-family);
+    font-weight: var(--Subheading-font-weight);
+    color: var(--color-primitives-brand-500);
+    font-size: var(--Subheading-font-size);
+    letter-spacing: var(--Subheading-letter-spacing);
+    line-height: var(--Subheading-line-height);
+    font-style: var(--Subheading-font-style);
+}
+
+/* feature-header 内的描述:与 featuretitle 同尺寸,semi-bold + 次深灰作分层 */
+.description {
+    font-family: var(--heading-font-family);
+    font-weight: 600;
+    color: var(--color-primitives-brand-500);
+    font-size: clamp(14px, 0.6rem + 0.9vw, 24px);
+    letter-spacing: var(--heading-letter-spacing);
+    line-height: var(--heading-line-height);
+    font-style: var(--heading-font-style);
+    max-width: 560px;
+    text-align: left;
+    text-wrap: pretty;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.description p {
+    text-align: left;
+}
+
+/* self-identity 内的描述:与 worktitle/worksubtitle 同组,作为顶部框架单元 */
+.work-description {
+    font-family: var(--heading-font-family);
+    font-weight: var(--heading-font-weight);
+    color: var(--color-text-brand-default);
+    font-size: var(--heading-font-size);
+    letter-spacing: var(--heading-letter-spacing);
+    line-height: var(--heading-line-height);
+    font-style: var(--heading-font-style);
+    max-width: 640px;
+    text-align: left;
+    text-wrap: pretty;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.work-description p {
+    text-align: left;
+}
+
+/* feature 单元:同一 feature 的 header + gallery 紧密组合,
+   unit 内 16px 体现亲密性,unit 之间靠 .container gap 24px 区分 */
+.feature-unit {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-sizing: border-box;
+    max-width: 1720px;
+    width: 100%;
+}
+
+.feature-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.feature {
+    display: flex;
+    width: 50%;
+}
+
+.featuretitle {
+    font-family: var(--heading-font-family);
+    font-weight: 400;
+    color: var(--color-primitives-brand-800);
+    font-size: clamp(14px, 0.6rem + 0.9vw, 24px);
+    letter-spacing: var(--heading-letter-spacing);
+    line-height: 1.3;
+    font-style: var(--heading-font-style);
+}
+
+.section-2img {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 20px;
+    box-sizing: border-box;
+    max-width: 1720px;
+    width: 100%;
+}
+
+.section-2img .sector-item {
+    display: block;
+    width: calc(50% - 10px);
+    height: auto;
+    box-sizing: border-box;
+}
+
+.section-img {
+    display: block;
+    box-sizing: border-box;
+    max-width: 1720px;
+    width: 100%;
+}
+
+.section-img .sector-item {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.work-img-container {
+    position: relative;
+    display: block;
+    width: 100%;
+    cursor: pointer;
+}
+
+/* 键盘聚焦:与图片缩略图相关的点击元素都给可见 focus 环 */
+.work-img-container:focus-visible {
+    outline: 2px solid #4a90e2;
+    outline-offset: 2px;
+}
+
+.poster-img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.work-img-container iframe.poster-img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    border: none;
+}
+
+@media (max-width: 1310px) {
+    /* 中等屏:self-identity 与 feature-header 改纵排,
+       避免 title(800)+ description 宽度不够挤到换行错位 */
+    .self-identity {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .feature-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .feature {
+        width: 100%;
+    }
+
+    .description,
+    .work-description {
+        margin-left: 0;
+        max-width: 560px;
+        width: 100%;
+    }
+}
+
+@media (max-width: 900px) {
+    .section-2img {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .section-2img .sector-item {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: var(--fs-h1);
+        line-height: var(--lh-tight);
+        letter-spacing: -0.02em;
+        font-weight: 800;
+    }
+
+    .title b {
+        font-size: inherit;
+        line-height: inherit;
+        letter-spacing: inherit;
+        font-weight: inherit;
+    }
+
+    .featuretitle {
+        font-size: var(--fs-h2);
+        line-height: 1.2;
+    }
+
+    .title .worksubtitle {
+        font-size: 12px;
+        font-weight: 400;
+        letter-spacing: 0.02em;
+        color: var(--color-primitives-brand-500);
+        margin-top: 6px;
+        margin-bottom: 10px;
+    }
+
+    .description,
+    p.description,
+    .description-text,
+    .work-description,
+    p.work-description {
+        font-size: var(--fs-h2);
+        line-height: var(--lh-normal);
+        word-break: break-word;
+    }
+}

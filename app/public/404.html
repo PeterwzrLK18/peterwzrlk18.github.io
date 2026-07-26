@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Portfolio - Likai Wang</title>
+    <script>
+      // SPA fallback for GitHub Pages:
+      // GitHub Pages serves this file for any unknown path.
+      // Stash the requested path and redirect to "/", where the SPA
+      // will pick it up and restore the correct route via history.replaceState.
+      (function () {
+        var path = window.location.pathname + window.location.search + window.location.hash;
+        try {
+          sessionStorage.setItem('spa-redirect', path);
+        } catch (e) {
+          // sessionStorage may be blocked (private mode); fall through to redirect
+        }
+        window.location.replace('/');
+      })();
+    </script>
+  </head>
+  <body>
+    <p>Redirecting… If you are not redirected, <a href="/">click here</a>.</p>
+  </body>
+</html>

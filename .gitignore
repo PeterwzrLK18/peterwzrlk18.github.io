@@ -1,0 +1,21 @@
+# Node modules
+**/node_modules/
+
+# Build output
+**/dist/
+
+# Logs
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE config
+.vscode/
+
+# Migration source archive (local reference only, not pushed)
+archive_old/
+
+# Orphan npm lockfile (project uses pnpm -> app/pnpm-lock.yaml)
+package-lock.json
