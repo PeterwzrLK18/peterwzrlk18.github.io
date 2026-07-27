@@ -1,20 +1,78 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { ModalContext } from './modal-context';
 import '../modal.css';
 
+const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
+const PAN_PX_PER_STEP = 60;
+const ZOOM_FACTOR = 1.8;
+
 function ModalContent({ image, onClose, onNavigate, total, index }) {
   const [isLong, setIsLong] = useState(false);
-  // 标记当前 img 是否已加载完(切图后到 onLoad 之间的空白)
   const [loaded, setLoaded] = useState(false);
+  const [zoomed, setZoomed] = useState(false);
+  const [pan, setPan] = useReducer(
+    (s, a) => (typeof a === 'function' ? a(s) : { ...s, ...a }),
+    { x: 0, y: 0, zoom: 1, dragging: false },
+  );
 
-  // ESC 关闭,← → 翻页
+  const containerRef = useRef(null);
+  const imgRef = useRef(null);
+  const dragOffsetRef = useRef({ startClientX: 0, startClientY: 0, startPanX: 0, startPanY: 0 });
+  const panBoundsRef = useRef({ maxX: 0, maxY: 0 });
+
+  // Latest zoom state for the global keydown listener (avoids stale closure).
+  const stateRef = useRef({ zoomed, isLong, pan });
   useEffect(() => {
+    stateRef.current = { zoomed, isLong, pan };
+  }, [zoomed, isLong, pan]);
+
+  // Global keyboard: close / nav / zoom-toggle / pan.
+  useEffect(() => {
+    const isArrowPanOnly = total <= 1;
+
     const onKey = (e) => {
-      if (e.key === 'Escape') onClose();
-      else if (e.key === 'ArrowRight' && total > 1) {
+      const s = stateRef.current;
+      if (e.key === 'Escape') {
+        if (s.zoomed) {
+          setZoomed(false);
+          setPan({ x: 0, y: 0, zoom: 1, dragging: false });
+        } else {
+          onClose();
+        }
+        return;
+      }
+      if (e.key === 'Enter' || e.key === ' ') {
+        if (s.isLong) {
+          e.preventDefault();
+          if (s.zoomed) {
+            setZoomed(false);
+            setPan({ x: 0, y: 0, zoom: 1, dragging: false });
+          } else {
+            setZoomed(true);
+            setPan({ zoom: ZOOM_FACTOR });
+          }
+        }
+        return;
+      }
+      if (e.key === 'ArrowRight' && total > 1) {
         onNavigate((index + 1) % total);
       } else if (e.key === 'ArrowLeft' && total > 1) {
         onNavigate((index - 1 + total) % total);
+      } else if (s.zoomed) {
+        const b = panBoundsRef.current;
+        let dx = 0, dy = 0;
+        if (e.key === 'ArrowDown') dy = PAN_PX_PER_STEP;
+        else if (e.key === 'ArrowUp') dy = -PAN_PX_PER_STEP;
+        else if (isArrowPanOnly && e.key === 'ArrowRight') dx = PAN_PX_PER_STEP;
+        else if (isArrowPanOnly && e.key === 'ArrowLeft') dx = -PAN_PX_PER_STEP;
+        if (dx || dy) {
+          e.preventDefault();
+          setPan((prev) => ({
+            x: clamp((prev.x ?? 0) + dx, -b.maxX, b.maxX),
+            y: clamp((prev.y ?? 0) + dy, -b.maxY, b.maxY),
+          }));
+        }
       }
     };
     document.addEventListener('keydown', onKey);
@@ -25,16 +83,109 @@ function ModalContent({ image, onClose, onNavigate, total, index }) {
     };
   }, [onClose, onNavigate, index, total]);
 
+  // Recompute pan bounds whenever canvas size or zoom factor changes.
+  const computeBounds = useCallback(() => {
+    const container = containerRef.current;
+    const img = imgRef.current;
+    if (!container || !img) {
+      panBoundsRef.current = { maxX: 0, maxY: 0 };
+      return;
+    }
+    const imgW = img.offsetWidth * pan.zoom;
+    const imgH = img.offsetHeight * pan.zoom;
+    const maxX = Math.max(0, (imgW - container.offsetWidth) / 2);
+    const maxY = Math.max(0, (imgH - container.offsetHeight) / 2);
+    panBoundsRef.current = { maxX, maxY };
+  }, [pan.zoom]);
+
+  useEffect(() => {
+    computeBounds();
+    const onResize = () => computeBounds();
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, [computeBounds]);
+
+  // Hover-follow: while long & not zoomed, map cursor's vertical position to a
+  // vertical pan so the user can scroll through the long image by hovering.
+  const onMouseMove = (e) => {
+    if (!isLong || zoomed) return;
+    const container = containerRef.current;
+    const img = imgRef.current;
+    if (!container || !img) return;
+    const rect = container.getBoundingClientRect();
+    const imgH = img.offsetHeight * pan.zoom;
+    if (imgH <= rect.height) return;
+    const ratioY = (e.clientY - rect.top) / rect.height;
+    const maxY = (imgH - rect.height) / 2;
+    const y = clamp(-ratioY * 2 * maxY + maxY, -maxY, maxY);
+    setPan({ x: 0, y });
+  };
+
+  // Enter drag-mode while zoomed.
+  const onMouseDown = (e) => {
+    if (!zoomed) return;
+    e.preventDefault();
+    setPan({ dragging: true });
+    dragOffsetRef.current = {
+      startClientX: e.clientX,
+      startClientY: e.clientY,
+      startPanX: pan.x ?? 0,
+      startPanY: pan.y ?? 0,
+    };
+  };
+
+  useEffect(() => {
+    if (!pan.dragging) return;
+    const onMove = (e) => {
+      const b = panBoundsRef.current;
+      const dx = e.clientX - dragOffsetRef.current.startClientX;
+      const dy = e.clientY - dragOffsetRef.current.startClientY;
+      setPan({
+        x: clamp(dragOffsetRef.current.startPanX + dx, -b.maxX, b.maxX),
+        y: clamp(dragOffsetRef.current.startPanY + dy, -b.maxY, b.maxY),
+      });
+    };
+    const onUp = () => setPan({ dragging: false });
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+    return () => {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+    };
+  }, [pan.dragging]);
+
   if (!image) return null;
 
+  // img onLoad: compute long-image flag, mark loaded, reset pan/zoom
+  // (event-driven — replaces the previous image-src dependency effect so
+  // we don't trigger a sync setState inside an effect.)
   const onLoad = (e) => {
     const img = e.currentTarget;
     const ratio = img.naturalHeight / img.naturalWidth;
     setIsLong(ratio > 2);
     setLoaded(true);
+    setZoomed(false);
+    setPan({ x: 0, y: 0, zoom: 1, dragging: false });
   };
 
-  // 当 image.src 变更,新图尚未 onLoad,loaded 重置由 key 实施(见下方 img)
+  // Click on long image toggles zoom.
+  const onImgClickToggle = (e) => {
+    e.stopPropagation();
+    if (!isLong) return;
+    if (zoomed) {
+      setZoomed(false);
+      setPan({ x: 0, y: 0, zoom: 1, dragging: false });
+    } else {
+      setZoomed(true);
+      setPan({ zoom: ZOOM_FACTOR });
+    }
+  };
+
+  const cursor = zoomed
+    ? (pan.dragging ? 'grabbing' : 'grab')
+    : (isLong ? 'zoom-in' : 'default');
+
+  const transform = `translate(${pan.x ?? 0}px, ${pan.y ?? 0}px) scale(${pan.zoom})`;
 
   return (
     <div
@@ -54,17 +205,32 @@ function ModalContent({ image, onClose, onNavigate, total, index }) {
         &times;
       </button>
 
-      <div className="modal-content-container" onClick={(e) => e.stopPropagation()}>
+      <div
+        ref={containerRef}
+        className={`modal-content-container${isLong ? ' modal-content-container-long' : ''}`}
+        onMouseMove={onMouseMove}
+        onMouseDown={onMouseDown}
+        onClick={(e) => e.stopPropagation()}
+      >
         <img
           key={image.src}
-          className={`modal-content${isLong ? ' modal-content-long' : ''}${loaded ? ' modal-content-loaded' : ''}`}
+          ref={imgRef}
+          className={`modal-content${isLong ? ' modal-content-long' : ''}${loaded ? ' modal-content-loaded' : ''}${zoomed ? ' modal-content-zoomed' : ''}`}
+          style={{ transform, cursor }}
           src={image.src}
           alt={image.alt || ''}
           onLoad={onLoad}
+          onClick={onImgClickToggle}
+          draggable={false}
         />
-        {isLong && (
+        {isLong && !zoomed && (
           <div className="modal-long-hint" aria-hidden="true">
-            Long image &middot; hover to inspect
+            Long image &middot; move cursor to scan &middot; click to zoom
+          </div>
+        )}
+        {isLong && zoomed && (
+          <div className="modal-long-hint modal-long-hint-zoomed" aria-hidden="true">
+            Drag to pan &middot; click to reset
           </div>
         )}
       </div>
@@ -95,7 +261,6 @@ function ModalContent({ image, onClose, onNavigate, total, index }) {
 
 function Modal({ images, currentIndex, onClose, onNavigate }) {
   const image = images[currentIndex];
-  // 不用 key 重挂载 — 切图时只换 src,组件保持挂载,避免 modalFadeIn 重放与 img 重渲闪烁
   return (
     <ModalContent
       image={image}

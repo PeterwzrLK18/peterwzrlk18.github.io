@@ -318,7 +318,7 @@ pnpm lint        # ESLint 检查
 | 4 | Tailwind v4 CSS-first 启用 + `@font-face font-display: swap` + App.css/globals.css 删除 + rootClass 三分 + 三层亲密性梯度架构 + 死代码清理 | ✅ |
 | 5 | 图片优化(webp -89% 体积、picture 多源、CLS 防护)+ 灯箱重建(ModalProvider + WorkImgContainer + LightboxGallery + dots + 长图识别 + 键盘 ← → ESC + 切图无闪烁)+ a11y(focus-visible / ARIA / reduced-motion) | ✅ |
 | 4b | 把 `works.css` / `about.css` / `index.css` / `shared.css` / `styleguide.css` / `NYBS.css` 全部删除;所有 className 迁成 Tailwind utility 或集中到 `src/styles/markup.js`;token + 断点 + `@font-face` 全部搬到 `tailwind.css` 的 `@theme` / `@layer base` | ✅ |
-| 5b | 灯箱长图交互:鼠标 hover 跟随 + pan/zoom 数学交互(目前 modal 已识别长图但只加 cursor-zoom-in + 浮动提示) | ⚪ 后续 |
+| 5b | 灯箱长图交互:hover 跟随 Y 轴扫描 + click 切换 1.8× 缩放 + 拖拽 pan + 键盘 ↑↓←→(单图模式下) + ESC 二段退出(zoom→close)+ reduced-motion 禁用过渡 | ✅ |
 | 6 | CI 升级(pnpm 版本 + 缓存 + lint 门禁)、最小冒烟测试 | ⚪ |
 
 ---

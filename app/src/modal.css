@@ -1,4 +1,4 @@
-/* 模态灯箱 - Phase 5 重建版 */
+/* 模态灯箱 — Phase 5 重建版 + Phase 5b 长图 pan/zoom */
 
 @keyframes modalFadeIn {
   from { opacity: 0; }
@@ -50,6 +50,14 @@
   box-sizing: border-box;
 }
 
+/* Long-image container: overflow visible so transform can push image outside;
+   the modal itself doesn't scroll — the draggable image sits inside. */
+.modal-content-container-long {
+  overflow: hidden;
+  max-width: min(1720px, 92vw);
+  max-height: 88vh;
+}
+
 .modal-content {
   max-width: min(1720px, 92vw);
   max-height: 88vh;
@@ -58,22 +66,25 @@
   object-fit: contain;
   opacity: 0;
   transition: opacity 0.18s ease-out;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .modal-content-loaded {
   opacity: 1;
 }
 
-/* 长图:加 zoom-in 光标提示用户"长图模式"(实际 zoom 交互留给后续 Phase 5b) */
-.modal-long {
-  /* 容器级:无额外样式,只作 selector hook */
-}
-
+/* Long image: fits height, width auto, default cursor zoom-in. */
 .modal-content-long {
-  cursor: zoom-in;
-  /* 切到全高度并允许垂直滚动,让长图细节可读 */
   max-height: 88vh;
   width: auto;
+  /* Smooth scroll-follow on hover when not zoomed. */
+  transition: transform 0.12s ease-out;
+}
+
+/* Once zoomed: drop the smoothing so dragging feels instantaneous. */
+.modal-content-zoomed {
+  transition: none;
 }
 
 .modal-long-hint {
@@ -92,6 +103,12 @@
   opacity: 1;
   transition: opacity 0.3s ease;
   white-space: nowrap;
+}
+
+/* In zoom mode the hint sits at the top to avoid covering the dragging hand. */
+.modal-long-hint-zoomed {
+  bottom: auto;
+  top: 16px;
 }
 
 /* 底部圆点导航 */
@@ -127,7 +144,6 @@
   outline-offset: 2px;
 }
 
-/* 选中状态:更大、纯白 */
 .modal-dot-active {
   width: 10px;
   height: 10px;
@@ -138,7 +154,7 @@
   background: #ffffff;
 }
 
-/* 无动画偏好用户禁用过渡 */
+/* 无动画偏好用户:禁用过渡 + 关闭 hover-follow smoothing */
 @media (prefers-reduced-motion: reduce) {
   .modal {
     animation: none;
@@ -153,5 +169,9 @@
   }
   .modal-content {
     opacity: 1;
+  }
+  /* Long image's hover-follow smoothing disabled; user can still click-to-zoom & drag. */
+  .modal-content-long {
+    transition: none;
   }
 }
