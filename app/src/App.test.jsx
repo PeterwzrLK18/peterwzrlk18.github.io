@@ -19,7 +19,7 @@ describe('App smoke test', () => {
         <App />
       </MemoryRouter>
     );
-    expect(container.querySelectorAll('.sector-item').length).toBe(9);
+    expect(container.querySelectorAll('a[href^="/work/"]').length).toBe(9);
   });
 
   it('renders 404 page for unknown route', () => {

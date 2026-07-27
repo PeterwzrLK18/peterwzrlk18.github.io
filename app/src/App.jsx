@@ -1,8 +1,4 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
-import './shared.css';
-import './index.css';
-import './about.css';
-import './styleguide.css';
 import Navbar from './components/Navbar';
 import ScrollToTop from './components/ScrollToTop';
 import { ModalProvider } from './components/Modal';
@@ -14,13 +10,16 @@ import NotFoundPage from './pages/NotFoundPage';
 function App() {
   const location = useLocation();
   const path = location.pathname;
-  const rootClass = path === '/about' ? 'about' : path.startsWith('/work/') ? 'work' : 'home';
+  const page = path === '/about' ? 'about' : path.startsWith('/work/') ? 'work' : 'home';
 
   return (
     <ModalProvider>
       <ScrollToTop />
       <a href="#main-content" className="sr-only">Skip to main content</a>
-      <div className={rootClass}>
+      <div
+        className="flex flex-col min-h-screen gap-[var(--gap-after-nav)]"
+        data-page={page}
+      >
         <header>
           <Navbar />
         </header>

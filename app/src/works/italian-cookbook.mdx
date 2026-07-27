@@ -1,5 +1,11 @@
-import '../works.css';
 import WorkImgContainer from '../components/WorkImgContainer';
+import {
+  sectionImgCls,
+  sectionImgItemCls,
+  section2imgCls,
+  section2imgItemCls,
+  descriptionCls,
+} from '../styles/markup';
 
 export const meta = {
   title: 'Italian cookbook',
@@ -8,53 +14,53 @@ export const meta = {
   tags: ['Book Design', 'Editorial'],
 };
 
-<div className="section-img">
-  <div className="sector-item">
+<div className={sectionImgCls}>
+  <div className={sectionImgItemCls}>
     <WorkImgContainer src="/img/Italian cookbook/Cover.png" alt="Cover" />
   </div>
 </div>
 
-<div className="section-2img">
-  <div className="sector-item">
+<div className={section2imgCls}>
+  <div className={section2imgItemCls}>
     <WorkImgContainer src="/img/Italian cookbook/Content.png" alt="Content" />
   </div>
-  <div className="sector-item">
+  <div className={section2imgItemCls}>
     <WorkImgContainer src="/img/Italian cookbook/Intro.png" alt="Intro" />
   </div>
 </div>
 
-<div className="section-2img">
-  <div className="sector-item">
+<div className={section2imgCls}>
+  <div className={section2imgItemCls}>
     <WorkImgContainer src="/img/Italian cookbook/The Essentials of Cooking Pasta.png" alt="The Essentials of Cooking Pasta" />
   </div>
-  <div className="sector-item">
+  <div className={section2imgItemCls}>
     <WorkImgContainer src="/img/Italian cookbook/Risotto.png" alt="Risotto" />
   </div>
 </div>
 
-<div className="section-2img">
-  <div className="sector-item">
+<div className={section2imgCls}>
+  <div className={section2imgItemCls}>
     <WorkImgContainer src="/img/Italian cookbook/Fish and shellfish.png" alt="Fish and Shellfish" />
   </div>
-  <div className="sector-item">
+  <div className={section2imgItemCls}>
     <WorkImgContainer src="/img/Italian cookbook/Salads.png" alt="Salads" />
   </div>
 </div>
 
-<div className="section-2img">
-  <div className="sector-item">
+<div className={section2imgCls}>
+  <div className={section2imgItemCls}>
     <WorkImgContainer src="/img/Italian cookbook/Salads oblique.png" alt="Salads oblique" />
   </div>
-  <div className="sector-item">
+  <div className={section2imgItemCls}>
     <WorkImgContainer src="/img/Italian cookbook/Dish image.png" alt="Dish image" />
   </div>
 </div>
 
-<div className="section-2img">
-  <div className="sector-item">
+<div className={section2imgCls}>
+  <div className={section2imgItemCls}>
     <WorkImgContainer src="/img/Italian cookbook/Back Cover.png" alt="Back Cover" />
   </div>
-  <div className="description">
-    <p className="description"> </p>
+  <div className={descriptionCls}>
+    <p className={descriptionCls}> </p>
   </div>
 </div>

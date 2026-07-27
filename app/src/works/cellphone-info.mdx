@@ -1,5 +1,10 @@
-import '../works.css';
 import WorkImgContainer from '../components/WorkImgContainer';
+import {
+  sectionImgCls,
+  sectionImgItemCls,
+  section2imgCls,
+  section2imgItemCls,
+} from '../styles/markup';
 
 export const meta = {
   title: 'Cellphone info',
@@ -8,17 +13,17 @@ export const meta = {
   tags: ['Infographic', 'Data Visualization'],
 };
 
-<div className="section-img">
-  <div className="sector-item">
+<div className={sectionImgCls}>
+  <div className={sectionImgItemCls}>
     <WorkImgContainer src="/img/Cellphone info/Main work.png" alt="Main Chart" />
   </div>
 </div>
 
-<div className="section-2img">
-  <div className="sector-item">
+<div className={section2imgCls}>
+  <div className={section2imgItemCls}>
     <WorkImgContainer src="/img/Cellphone info/Poster-1.png" alt="Poster" />
   </div>
-  <div className="sector-item">
+  <div className={section2imgItemCls}>
     <WorkImgContainer src="/img/Cellphone info/Poster-2.png" alt="Poster" />
   </div>
 </div>

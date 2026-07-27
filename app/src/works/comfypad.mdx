@@ -1,5 +1,18 @@
-import '../works.css';
 import WorkImgContainer from '../components/WorkImgContainer';
+import {
+  sectionImgCls,
+  sectionImgItemCls,
+  section2imgCls,
+  section2imgItemCls,
+  featureUnitCls,
+  featureHeaderCls,
+  featureCls,
+  featuretitleCls,
+  descriptionCls,
+  featureGalleryCls,
+  iframeContainerCls,
+  iframePosterCls,
+} from '../styles/markup';
 
 export const meta = {
   title: 'ComfyPad',
@@ -8,79 +21,79 @@ export const meta = {
   tags: ['Hardware', 'Medical', 'Prototyping'],
 };
 
-<div className="section-img">
-  <div className="sector-item">
+<div className={sectionImgCls}>
+  <div className={sectionImgItemCls}>
     <WorkImgContainer src="/img/ComfyPad/Main Cover.png" alt="Main Cover" />
   </div>
 </div>
 
-<div className="feature-unit">
-  <div className="feature-header">
-    <div className="feature">
-      <b className="featuretitle">Background Research:<br />Clinical Problem: The High Risk of Pressure Ulcers</b>
+<div className={featureUnitCls}>
+  <div className={featureHeaderCls}>
+    <div className={featureCls}>
+      <b className={featuretitleCls}>Background Research:<br />Clinical Problem: The High Risk of Pressure Ulcers</b>
     </div>
-    <div className="description">
-      <p className="description">Research identifies specific anatomical vulnerable areas, highlighting the urgent need for localized, programmable support to prevent tissue necrosis in long-term care.</p>
+    <div className={descriptionCls}>
+      <p className={descriptionCls}>Research identifies specific anatomical vulnerable areas, highlighting the urgent need for localized, programmable support to prevent tissue necrosis in long-term care.</p>
     </div>
   </div>
-  <div className="feature-gallery">
-    <div className="section-2img">
-      <div className="sector-item">
+  <div className={featureGalleryCls}>
+    <div className={section2imgCls}>
+      <div className={section2imgItemCls}>
         <WorkImgContainer src="/img/ComfyPad/Background Research-1.png" alt="Research 1" />
       </div>
-      <div className="sector-item">
+      <div className={section2imgItemCls}>
         <WorkImgContainer src="/img/ComfyPad/Background Research-2.png" alt="Research 2" />
       </div>
     </div>
   </div>
 </div>
 
-<div className="feature-unit">
-  <div className="feature-header">
-    <div className="feature">
-      <b className="featuretitle">Analysis:<br />Comparative Analysis & Structural Optimization</b>
+<div className={featureUnitCls}>
+  <div className={featureHeaderCls}>
+    <div className={featureCls}>
+      <b className={featuretitleCls}>Analysis:<br />Comparative Analysis &amp; Structural Optimization</b>
     </div>
-    <div className="description">
-      <p className="description">Optimizing airbag geometry via stress simulations to enhance surface adaptability.</p>
+    <div className={descriptionCls}>
+      <p className={descriptionCls}>Optimizing airbag geometry via stress simulations to enhance surface adaptability.</p>
     </div>
   </div>
-  <div className="feature-gallery">
-    <div className="section-2img">
-      <div className="sector-item">
+  <div className={featureGalleryCls}>
+    <div className={section2imgCls}>
+      <div className={section2imgItemCls}>
         <WorkImgContainer src="/img/ComfyPad/Analysis-1.png" alt="Analysis 1" />
       </div>
-      <div className="sector-item">
+      <div className={section2imgItemCls}>
         <WorkImgContainer src="/img/ComfyPad/Analysis-2.png" alt="Analysis 2" />
       </div>
     </div>
   </div>
 </div>
 
-<div className="feature-unit">
-  <div className="feature-header">
-    <div className="feature">
-      <b className="featuretitle">System Architecture & Circuitry:<br />Embedded Control & Valve Logic</b>
+<div className={featureUnitCls}>
+  <div className={featureHeaderCls}>
+    <div className={featureCls}>
+      <b className={featuretitleCls}>System Architecture &amp; Circuitry:<br />Embedded Control &amp; Valve Logic</b>
     </div>
-    <div className="description">
-      <p className="description">ESP32-based system controlling a solenoid valve array via custom PCB and Web-interface for precise pneumatic indexing.</p>
+    <div className={descriptionCls}>
+      <p className={descriptionCls}>ESP32-based system controlling a solenoid valve array via custom PCB and Web-interface for precise pneumatic indexing.</p>
     </div>
   </div>
-  <div className="feature-gallery">
-    <div className="section-2img">
-      <div className="sector-item">
+  <div className={featureGalleryCls}>
+    <div className={section2imgCls}>
+      <div className={section2imgItemCls}>
         <WorkImgContainer src="/img/ComfyPad/Prototyping-1.png" alt="Embedded Control & Valve Logic" />
       </div>
-      <div className="sector-item">
+      <div className={section2imgItemCls}>
         <WorkImgContainer src="/img/ComfyPad/Prototyping-2.png" alt="Functional Prototype & Validation" />
       </div>
     </div>
   </div>
 </div>
 
-<div className="section-img">
-  <div className="sector-item">
-    <div className="work-img-container">
-      <iframe className="poster-img" loading="lazy" src="https://www.youtube-nocookie.com/embed/zVOVMspeC44" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+<div className={sectionImgCls}>
+  <div className={sectionImgItemCls}>
+    <div className={iframeContainerCls}>
+      <iframe className={iframePosterCls} loading="lazy" src="https://www.youtube-nocookie.com/embed/zVOVMspeC44" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
     </div>
   </div>
 </div>

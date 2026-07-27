@@ -1,5 +1,12 @@
-import '../works.css';
 import WorkImgContainer from '../components/WorkImgContainer';
+import {
+  section2imgCls,
+  section2imgItemCls,
+  sectionImgCls,
+  sectionImgItemCls,
+  descriptionCls,
+  descriptionTextCls,
+} from '../styles/markup';
 
 export const meta = {
   title: 'Plagiarism',
@@ -8,26 +15,26 @@ export const meta = {
   tags: ['Packaging', 'Album Design'],
 };
 
-<div className="section-2img">
-  <div className="sector-item">
+<div className={section2imgCls}>
+  <div className={section2imgItemCls}>
     <WorkImgContainer src="/img/Plagiarism/01_Cover.png" alt="Cover Design" />
   </div>
-  <div className="sector-item">
+  <div className={section2imgItemCls}>
     <WorkImgContainer src="/img/Plagiarism/01_Back.png" alt="Back Cover Design" />
   </div>
 </div>
 
-<div className="section-2img">
-  <div className="sector-item">
+<div className={section2imgCls}>
+  <div className={section2imgItemCls}>
     <WorkImgContainer src="/img/Plagiarism/01_All.png" alt="Album Spread" />
   </div>
-  <div className="description">
-    <p className="description-text">As a designer deeply inspired by Yorushika's Plagiarism — an album exploring themes of artistic creation, self-identity, and the blurred line between "originality" and "plagiarism" — I reimagined its visual identity through a fragmented, introspective lens.</p>
+  <div className={descriptionCls}>
+    <p className={descriptionTextCls}>As a designer deeply inspired by Yorushika&rsquo;s Plagiarism &mdash; an album exploring themes of artistic creation, self-identity, and the blurred line between &ldquo;originality&rdquo; and &ldquo;plagiarism&rdquo; &mdash; I reimagined its visual identity through a fragmented, introspective lens.</p>
   </div>
 </div>
 
-<div className="section-img">
-  <div className="sector-item">
+<div className={sectionImgCls}>
+  <div className={sectionImgItemCls}>
     <WorkImgContainer src="/img/Plagiarism/01_Poster.png" alt="Poster Image" />
   </div>
 </div>

@@ -1,20 +1,16 @@
 import { useEffect, useRef } from 'react';
 import { useLightboxGallery } from './lightbox-gallery-context';
 
-/**
- * 包装作品详情页里的图片:
- * - 自动生成 webp source + PNG/GIF fallback(<picture>)
- * - 注册到当前页的 LightboxGallery;点击触发 Modal 显示该页图片数组
- *
- * src 接受 png / gif / webp 路径;webp 自动从 PNG 路径推断
- */
+const containerBase =
+  'block relative w-full cursor-pointer focus-visible:outline-2 focus-visible:outline-[#4a90e2] focus-visible:outline-offset-2';
+const imgBase = 'block w-full h-auto';
+
 function WorkImgContainer({ src, alt, className = '' }) {
   const gallery = useLightboxGallery();
   const indexRef = useRef(-1);
   const entryRef = useRef(null);
 
   useEffect(() => {
-    // 注册到画廊,记录自己的 index 与 entry 引用
     entryRef.current = { src, alt };
     indexRef.current = gallery.register(entryRef.current);
     return () => {
@@ -22,9 +18,9 @@ function WorkImgContainer({ src, alt, className = '' }) {
         gallery.unregister(indexRef.current, entryRef.current);
       }
     };
-  }, [src, alt, gallery]); // src/alt 不变时只注册一次
+  }, [src, alt, gallery]);
 
-  const cls = className ? `work-img-container ${className}` : 'work-img-container';
+  const cls = className ? `${containerBase} ${className}` : containerBase;
   const isPng = /\.png$/i.test(src);
   const webpSrc = isPng ? src.replace(/\.png$/i, '.webp') : null;
 
@@ -46,7 +42,7 @@ function WorkImgContainer({ src, alt, className = '' }) {
         <picture>
           <source srcSet={webpSrc} type="image/webp" />
           <img
-            className="poster-img"
+            className={imgBase}
             src={src}
             alt={alt}
             loading="lazy"
@@ -55,7 +51,7 @@ function WorkImgContainer({ src, alt, className = '' }) {
         </picture>
       ) : (
         <img
-          className="poster-img"
+          className={imgBase}
           src={src}
           alt={alt}
           loading="lazy"

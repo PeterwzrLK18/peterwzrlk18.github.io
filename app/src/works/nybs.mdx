@@ -1,6 +1,12 @@
-import '../works.css';
-import '../NYBS.css';
 import WorkImgContainer from '../components/WorkImgContainer';
+import {
+  sectionImgCls,
+  section2imgCls,
+  section2imgItemCls,
+  section3imgCls,
+  leftSectorItemCls,
+  rightSectorItemCls,
+} from '../styles/markup';
 
 export const meta = {
   title: 'NYBS',
@@ -11,33 +17,33 @@ export const meta = {
   tags: ['Campaigns', 'Web design'],
 };
 
-<div className="section-img">
-  <div className="sector-item">
+<div className={sectionImgCls}>
+  <div className={section2imgItemCls}>
     <WorkImgContainer src="/img/NYBS/Home Page.png" alt="Home Page" />
   </div>
 </div>
 
-<div className="section-3img">
-  <div className="left-sector-item">
+<div className={section3imgCls}>
+  <div className={leftSectorItemCls}>
     <WorkImgContainer src="/img/NYBS/Homepage Design.png" alt="Homepage Design" />
   </div>
-  <div className="right-sector-item">
+  <div className={rightSectorItemCls}>
     <WorkImgContainer src="/img/NYBS/Collectionpage Design.png" alt="Collectionpage Design" className="b" />
     <WorkImgContainer src="/img/NYBS/Product Page Design.png" alt="Productpage Design" className="c" />
   </div>
 </div>
 
-<div className="section-img">
-  <div className="sector-item">
+<div className={sectionImgCls}>
+  <div className={section2imgItemCls}>
     <WorkImgContainer src="/img/NYBS/Product Page Ipad.png" alt="Ipad Product Page" />
   </div>
 </div>
 
-<div className="section-2img">
-  <div className="sector-item">
+<div className={section2imgCls}>
+  <div className={section2imgItemCls}>
     <WorkImgContainer src="/img/NYBS/Small Size Smartphone.png" alt="Small Size Smartphone" />
   </div>
-  <div className="sector-item">
+  <div className={section2imgItemCls}>
     <WorkImgContainer src="/img/NYBS/Design Guildlines.png" alt="Design Guildlines" />
   </div>
 </div>

@@ -15,7 +15,7 @@
 | 框架 | React 19 |
 | 构建 | Vite 8 (`@vitejs/plugin-react`) |
 | 路由 | react-router-dom 7 (`BrowserRouter`) |
-| 样式 | 纯 CSS + CSS 变量(token system)。Tailwind v4 已 CSS-first 启用(`@theme` 镜像主 token + preflight reset),但全文档 utility 迁移仍待 Phase 4b |
+| 样式 | Tailwind v4 CSS-first:`@theme` 含 brand 色 + 字体 + 6 个自定义断点 + 所有响应 CSS 变量;`@layer base` 含 `@font-face` / `button:focus-visible`;app 内所有页面 className 改为 utility 字符串集中放 `src/styles/markup.js` |
 | 内容 | `@mdx-js/rollup` v3,作品内容按 `src/works/<slug>.mdx` 模块化 |
 | 包管理 | pnpm |
 | 部署 | GitHub Actions → `gh-pages` 分支 |
@@ -317,7 +317,7 @@ pnpm lint        # ESLint 检查
 | 3 | MDX v3 接入 → 9 个作品内容按 `src/works/<slug>.mdx` 全部迁完 | ✅ |
 | 4 | Tailwind v4 CSS-first 启用 + `@font-face font-display: swap` + App.css/globals.css 删除 + rootClass 三分 + 三层亲密性梯度架构 + 死代码清理 | ✅ |
 | 5 | 图片优化(webp -89% 体积、picture 多源、CLS 防护)+ 灯箱重建(ModalProvider + WorkImgContainer + LightboxGallery + dots + 长图识别 + 键盘 ← → ESC + 切图无闪烁)+ a11y(focus-visible / ARIA / reduced-motion) | ✅ |
-| 4b | 把 `works.css` / `about.css` / `index.css` / `shared.css` 等全局 className 逐步迁成 Tailwind utility,最终下沉到组件内联 className 或删除文件 | ⚪ 细节 |
+| 4b | 把 `works.css` / `about.css` / `index.css` / `shared.css` / `styleguide.css` / `NYBS.css` 全部删除;所有 className 迁成 Tailwind utility 或集中到 `src/styles/markup.js`;token + 断点 + `@font-face` 全部搬到 `tailwind.css` 的 `@theme` / `@layer base` | ✅ |
 | 5b | 灯箱长图交互:鼠标 hover 跟随 + pan/zoom 数学交互(目前 modal 已识别长图但只加 cursor-zoom-in + 浮动提示) | ⚪ 后续 |
 | 6 | CI 升级(pnpm 版本 + 缓存 + lint 门禁)、最小冒烟测试 | ⚪ |
 

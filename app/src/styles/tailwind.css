@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @theme {
+  /* ---- Brand color tokens ---- */
   --color-brand-900: rgba(30, 30, 30, 1);
   --color-brand-800: rgba(44, 44, 44, 1);
   --color-brand-700: rgba(90, 90, 90, 1);
@@ -9,8 +10,93 @@
   --color-brand-100: rgba(245, 245, 245, 1);
   --color-paper: rgba(255, 255, 255, 1);
 
+  /* ---- Aliases for legacy primitive names (kept for compatibility) ---- */
+  --color-primitives-white-1000: var(--color-paper);
+  --color-primitives-brand-900: var(--color-brand-900);
+  --color-primitives-brand-800: var(--color-brand-800);
+  --color-primitives-brand-500: var(--color-brand-500);
+  --color-primitives-brand-400: var(--color-brand-400);
+  --color-primitives-brand-100: var(--color-brand-100);
+  --color-primitives-slate-700: var(--color-brand-700);
+  --color-primitives-gray-900: var(--color-brand-900);
+
+  /* ---- Semantic color aliases (used by shared/index/about/works.css) ---- */
+  --color-background-default-default: var(--color-paper);
+  --color-text-brand-default: var(--color-brand-800);
+  --color-text-brand-tertiary: var(--color-brand-500);
+  --color-text-brand-on-brand-secondary: var(--color-brand-900);
+  --color-background-neutral-default: var(--color-brand-700);
+
+  /* ---- Font families ---- */
   --font-heading: "Inter", Helvetica, sans-serif;
   --font-mono: "Roboto Mono", Helvetica, sans-serif;
+
+  --heading-font-family: "Inter", Helvetica;
+  --heading-font-weight: 600;
+  --heading-font-size: clamp(14px, 0.6rem + 0.9vw, 24px);
+  --heading-letter-spacing: 0px;
+  --heading-line-height: 120%;
+  --heading-font-style: normal;
+
+  --single-line-body-base-font-family: "Inter", Helvetica;
+  --single-line-body-base-font-weight: 400;
+  --single-line-body-base-font-size: 16px;
+  --single-line-body-base-letter-spacing: 0px;
+  --single-line-body-base-line-height: 100%;
+  --single-line-body-base-font-style: normal;
+
+  --body-code-font-family: "Roboto Mono", Helvetica;
+  --body-code-font-weight: 400;
+  --body-code-font-size: 16px;
+  --body-code-letter-spacing: 0px;
+  --body-code-line-height: 100%;
+  --body-code-font-style: normal;
+
+  --body-small-strong-font-family: "Inter", Helvetica;
+  --body-small-strong-font-weight: 600;
+  --body-small-strong-font-size: 14px;
+  --body-small-strong-letter-spacing: 0px;
+  --body-small-strong-line-height: 140%;
+  --body-small-strong-font-style: normal;
+
+  --title-page-font-family: "Roboto Mono", Helvetica;
+  --title-page-font-weight: 700;
+  --title-page-font-size: clamp(28px, 1.5rem + 2vw, 48px);
+  --title-page-letter-spacing: 0px;
+  --title-page-line-height: 120%;
+  --title-page-font-style: normal;
+
+  --subheading-font-family: "Roboto Mono", Helvetica;
+  --subheading-font-weight: 400;
+  --subheading-font-size: clamp(16px, 0.8rem + 0.6vw, 20px);
+  --subheading-letter-spacing: 0px;
+  --subheading-line-height: 120%;
+  --subheading-font-style: normal;
+
+  /* ---- Mobile typography fallback sizes ---- */
+  --fs-h1: 28px;
+  --fs-h2: 20px;
+  --fs-sub: 15px;
+  --fs-body: 16px;
+  --fs-nav: 12px;
+  --lh-tight: 1.1;
+  --lh-normal: 1.5;
+  --section-spacing: 48px;
+
+  /* ---- Layout spacing tokens ---- */
+  --side-padding: 50px;
+  --gap-after-nav: clamp(16px, calc(16px + 24 * (1310px - 100vw) / 810), 40px);
+  --work-section-gap: 24px;
+  --card-ratio: 390 / 250;
+
+  /* ---- Custom breakpoints (Tailwind breakpoints are min-width;
+         use max-* variants for matching max-width thresholds) ---- */
+  --breakpoint-wide: 1311px;    /* max-wide:   max-width: 1310px */
+  --breakpoint-desktop: 901px;  /* max-desktop: max-width: 900px */
+  --breakpoint-tablet: 769px;   /* max-tablet:  max-width: 768px */
+  --breakpoint-navcol: 501px;   /* max-navcol:  max-width: 500px (navbar column mode) */
+  --breakpoint-mini: 491px;    /* max-mini:    max-width: 490px */
+  --breakpoint-ultra: 391px;   /* max-ultra:   max-width: 390px */
 }
 
 @layer base {
@@ -24,16 +110,39 @@
     height: 100%;
   }
 
+  body {
+    font-family: var(--single-line-body-base-font-family);
+  }
+
   a {
     text-decoration: none;
+  }
+
+  /* Roboto Mono variable font faces */
+  @font-face {
+    font-family: "Roboto Mono";
+    src: url("/fonts/RobotoMono-VariableFont_wght.ttf") format("truetype");
+    font-weight: 100 700;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "Roboto Mono";
+    src: url("/fonts/RobotoMono-Italic-VariableFont_wght.ttf") format("truetype");
+    font-weight: 100 700;
+    font-style: italic;
+    font-display: swap;
+  }
+
+  /* Global focus ring for native <button> elements */
+  button:focus-visible {
+    outline: 2px solid #4a90e2;
+    outline-offset: 2px;
   }
 }
 
 @layer utilities {
-  button:focus-visible {
-    outline: 2px solid #4a90e2 !important;
-  }
-
   .sr-only {
     position: absolute;
     width: 1px;
@@ -45,4 +154,49 @@
     white-space: nowrap;
     border: 0;
   }
+}
+
+/* ---- Responsive overrides of CSS custom properties (cannot live in @theme) ---- */
+@media (max-width: 1310px) {
+  :root { --side-padding: 40px; }
+}
+@media (max-width: 900px) {
+  :root { --side-padding: 30px; }
+}
+@media (max-width: 768px) {
+  :root {
+    --side-padding: 20px;
+    --work-section-gap: 16px;
+    --section-spacing: 24px;
+  }
+}
+@media (max-width: 490px) {
+  :root {
+    --fs-h1: 25px;
+    --fs-h2: 18px;
+    --fs-sub: 14px;
+    --section-spacing: 20px;
+  }
+}
+@media (max-width: 390px) {
+  :root {
+    --fs-h1: 23px;
+    --fs-h2: 17px;
+    --side-padding: 16px;
+  }
+}
+
+/* Optional SDS light/dark theme attribute selectors for future use */
+[data-color-mode="SDS-light"] {
+  --color-background-default-default: var(--color-paper);
+  --color-text-brand-default: var(--color-brand-800);
+  --color-text-brand-on-brand-secondary: var(--color-brand-900);
+  --color-text-brand-tertiary: var(--color-brand-500);
+}
+
+[data-color-mode="SDS-dark"] {
+  --color-background-default-default: var(--color-brand-900);
+  --color-text-brand-default: var(--color-brand-100);
+  --color-text-brand-on-brand-secondary: var(--color-brand-100);
+  --color-text-brand-tertiary: var(--color-brand-400);
 }
