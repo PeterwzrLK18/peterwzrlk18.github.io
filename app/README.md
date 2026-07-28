@@ -4,11 +4,13 @@
 
 本仓库根目录是从旧静态 HTML 站点迁移至 React SPA 的工作区。代码主体在 `app/`；`archive_old/` 是迁移来源(只读参考,不再迭代)。
 
-> **演进总结**(Phase 1 → 6 + 4b + 5b 已完成):
+> **演进总结**(Phase 1 → 6 + 4b + 5b + 清理 A/B/C + D1-D3 已完成):
 > - SPA 化 + 404 fallback + 9 个作品 MDX 模块化
 > - 图片 webp -89% 体积;灯箱系统 + 长图 hover-follow / click-zoom / drag-pan / 键盘 pan
 > - Tailwind v4 CSS-first:所有 token 在 `@theme`,旧 6 个 CSS 文件已删除,className 全部内联或集中到 `src/styles/markup.js`
 > - a11y(focus-visible / ARIA / reduced-motion)+ CI 缓存 + lint+test 门禁 + 3 个 vitest 冒烟测试
+> - SEO:`og:image`/`twitter:image` 改 absolute URL + width/height/alt + og:site_name;`sitemap.xml` + `robots.txt` 上线;简历 PDF 改 ASCII 文件名避免 URL 乱码;404 页 Tailwind 化 + "Back to Home" 按钮
+> - 清理:删除 Vite 脚手架残留 assets、根目录冗余 docs/、35MB PSD 源文件;注释与 .gitignore 同步现状(archive_old/ 保留)
 
 ---
 
@@ -35,13 +37,15 @@ app/
 ├── postcss.config.js          # @tailwindcss/postcss(v4 自带 autoprefixer)
 ├── tailwind.config.js         # 已删除(v4 CSS-first 配置改在 tailwind.css 里)
 ├── public/
-│   ├── 404.html               # GitHub Pages SPA fallback(SP WIP) → sessionStorage redirect
-│   ├── docs/                  # 中英文简历 PDF(Navbar Resume 链接目标)
-│   ├── fonts/                 # Roboto Mono VariableFont(随 Phase 4 补 font-display:swap 时迁入)
+│   ├── 404.html               # GitHub Pages SPA fallback → sessionStorage redirect
+│   ├── docs/                  # 中文简历 PDF(Navbar Resume 链接目标,Likai-Wang-Resume-CN.pdf)
+│   ├── fonts/                 # Roboto Mono VariableFont(font-display:swap)
 │   ├── img/
 │   │   ├── home/              # Home 卡片封面图
 │   │   └── <project>/         # 各项目详情图(NYBS / Starseeker / ComfyPad / ...)
-│   └── works-data.json        # 已删除(Phase 3 改用 src/data/works-index.js 静态 import)
+│   ├── sitemap.xml            # 11 个 URL(/ , /about , 9 个 work)
+│   ├── robots.txt             # Allow all + sitemap pointer
+│   └── (已废弃ployed) — 原旧静态 HTML / works-data.json 共迁完后已删
 └── src/
     ├── main.jsx               # BrowserRouter(无 view transitions)+ StrictMode + SPA redirect restore + render
     ├── App.jsx                # 路由 + 根 div(固定 Tailwind 字符串 + data-page 诊断 attr)
@@ -57,24 +61,18 @@ app/
     ├── data/
     │   └── works-index.js     # 作品索引(slug/title/img/alt),静态 import
     ├── works/
-    │   ├── nybs.mdx           # 9 个作品内容 + `export const meta = {...}`(注意 NYBS 走 section-3img 三图布局)
-    │   ├── wilderness-rescue.mdx
-    │   ├── orb-starseeker.mdx
-    │   ├── form-of-vertebra.mdx
-    │   ├── comfypad.mdx
-    │   ├── cellphone-info.mdx
-    │   ├── italian-cookbook.mdx
-    │   ├── sonder.mdx
-    │   └── plagiarism.mdx
+    │   └── <slug>.mdx         # 9 个作品:nybs / wilderness-rescue / orb-starseeker / form-of-vertebra / comfypad / cellphone-info / italian-cookbook / sonder / plagiarism
     ├── pages/
     │   ├── HomePage.jsx       # import worksIndex → 渲染 4 列响应网格(1310→3 / 900→2 / 490→1)
-    │   ├── AboutPage.jsx      # 静态 About 内容(monospace paragraph 体系)
+    │   ├── AboutPage.jsx      # 静态 About 内容(全部 Tailwind inline,无外 CSS)
     │   ├── WorkDetailPage.jsx # import.meta.glob 找 MDX → 渲染 meta + LightboxGallery + body
-    │   └── NotFoundPage.jsx   # 404 页
+    │   └── NotFoundPage.jsx   # Tailwind 化 404 页:巨 404 + "Back to Home" pill 按钮
+    ├── lib/
+    │   └── url.js             # absoluteUrl(path) — 拼绝对 URL + encodeURI,社交卡 OG/Twitter 用
     ├── styles/
     │   ├── tailwind.css       # Tailwind v4 入口 + @theme(token + 6 个自定义断点) + @layer base + @font-face + @layer utilities
-    │   └── markup.js         # 11 个 Tailwind class 常量字符串,供 WorkDetailPage + 9 个 MDX 共用
-    └── modal.css              # 灯箱 scoped 组件级 CSS(keyframe / dots / zoom hint)
+    │   └── markup.js          # 11 个 Tailwind class 常量字符串,供 WorkDetailPage + 9 个 MDX 共用
+    └── modal.css              # 灯箱 scoped 组件级 CSS(keyframe / dots / zoom hint / 5b pan 助动)
 ```
 
 CSS 当前仅 2 个文件:
@@ -330,7 +328,7 @@ pnpm lint        # ESLint 检查
 5. `pnpm build`
 6. `peaceiris/actions-gh-pages@v4` 把 `app/dist` 推到 `gh-pages` 分支
 
-启用 Pages:仓库 Settings → Pages → Source=`Deploy from a branch` → branch=`gh-pages` / `/ (root)`。
+启用 Pages:仓库 Settings → Pages → `Deploy from a branch` → branch=`gh-pages` / `/ (root)`。部署后由于 GitHub Pages CDN 对 HTML 缓存 10 分钟(`Cache-Control: max-age=600`),更新上线可能延迟几分钟;**用户首次更新到新版本需要 Ctrl+Shift+R 强刷刷掉旧 JS bundle**(CI 部署日志会在 1–2 分钟内显示绿勾)。
 
 ---
 
@@ -346,6 +344,13 @@ pnpm lint        # ESLint 检查
 | 4b | 把 `works.css` / `about.css` / `index.css` / `shared.css` / `styleguide.css` / `NYBS.css` 全部删除;所有 className 迁成 Tailwind utility 或集中到 `src/styles/markup.js`;token + 断点 + `@font-face` 全部搬到 `tailwind.css` 的 `@theme` / `@layer base` | ✅ |
 | 5b | 灯箱长图交互:hover 跟随 Y 轴扫描 + click 切换 1.8× 缩放 + 拖拽 pan + 键盘 ↑↓←→(单图模式下) + ESC 二段退出(zoom→close)+ reduced-motion 禁用过渡 | ✅ |
 | 6 | CI 升级:`pnpm/action-setup@v4`(version 10)+ `actions/setup-node@v4`(node 24 + pnpm cache)+ `pnpm lint && pnpm test && pnpm build` 三段门禁 + vitest 3 个冒烟测试(App renders / 9 work cards / 404 page) | ✅ |
+| 清理 A+B | 删 Vite 脚手架残留 `app/src/assets/{hero.png,react.svg,vite.svg}` / 根目录 `.nojekyll` / 根目录 `docs/`(与 `app/public/docs/` 重复)/ 根目录 `css-analysis.md` / `app/public/docs/Likai Wang Resume.docx.pdf`(Navbar 不链)/ `app/public/img/home/home-cover img.psd`(35MB PSD 不该进 prod) | ✅ |
+| C | 注释/文档 stale 引用同步:`tailwind.css` / `markup.js` / `README.md` 中残留"styleguide.css / works.css / .home .sector-item / .section-2img"等旧名同步为新 `markup.js` 常量名 `section2imgCls` / `featureUnitCls` 等 | ✅ |
+| D1 | 简历 PDF 改 ASCII 文件名:`王立凯 中文简历.docx.pdf` → `Likai-Wang-Resume-CN.pdf`,Navbar href 同步更新 | ✅ |
+| D2 | OG / Twitter 分享卡:`src/lib/url.js` 的 `absoluteUrl()` 统一全站 OG/Twitter image 改 absolute URL;补 `og:image:width / height / alt` + `og:site_name`;`index.html` 静态 head 与 `Seo.jsx` 动态 head 都升级;`encodeURI` 处理含空格图片路径 | ✅ |
+| D3 | `app/public/sitemap.xml`(11 个 URL,/ + /about + 9 个 work,priority 1.0/0.8/0.7)+ `app/public/robots.txt`(Allow all + sitemap 指针上线) | ✅ |
+| D3c | `NotFoundPage.jsx` Tailwind 整体化:Roboto Mono 巨 "404" + body-code 说明 + 描边 pill "Back to Home" 链接 + hover-fill + focus ring;移除 `.not-found` className 与为主样式 | ✅ |
+| D4 | Lighthouse / Web Vitals 实测(CI 已落地质量基线:webp + CLS 防护 + 缓存 + a11y,等部署稳定后跑一次留下分数) | ⚪ 待 run |
 
 ---
 
