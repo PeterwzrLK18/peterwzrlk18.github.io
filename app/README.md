@@ -4,7 +4,11 @@
 
 本仓库根目录是从旧静态 HTML 站点迁移至 React SPA 的工作区。代码主体在 `app/`；`archive_old/` 是迁移来源(只读参考,不再迭代)。
 
-> **本次(Phase 4 收尾)重要演进**:9 个作品 MDX 全部迁完 → 三层亲密性梯度架构形成 → typography 五级体系落地 → 死代码清理(61 行冗余)。整套设计语言融合编辑/书籍排版底色 + 响应式 web + 视觉层级意识。详见下文各个段落。
+> **演进总结**(Phase 1 → 6 + 4b + 5b 已完成):
+> - SPA 化 + 404 fallback + 9 个作品 MDX 模块化
+> - 图片 webp -89% 体积;灯箱系统 + 长图 hover-follow / click-zoom / drag-pan / 键盘 pan
+> - Tailwind v4 CSS-first:所有 token 在 `@theme`,旧 6 个 CSS 文件已删除,className 全部内联或集中到 `src/styles/markup.js`
+> - a11y(focus-visible / ARIA / reduced-motion)+ CI 缓存 + lint+test 门禁 + 3 个 vitest 冒烟测试
 
 ---
 
@@ -39,17 +43,21 @@ app/
 │   │   └── <project>/         # 各项目详情图(NYBS / Starseeker / ComfyPad / ...)
 │   └── works-data.json        # 已删除(Phase 3 改用 src/data/works-index.js 静态 import)
 └── src/
-    ├── main.jsx               # BrowserRouter + StrictMode + SPA redirect restore + render
-    ├── App.jsx                # 路由 + 根容器 className(home / about / work 三分)
+    ├── main.jsx               # BrowserRouter(无 view transitions)+ StrictMode + SPA redirect restore + render
+    ├── App.jsx                # 路由 + 根 div(固定 Tailwind 字符串 + data-page 诊断 attr)
     ├── components/
-    │   ├── Navbar.jsx         # 导航:active 态用 useLocation 推断
-    │   ├── WorkCard.jsx       # 单张作品卡(slug 缺失返回 null 防御)
+    │   ├── Navbar.jsx         # 导航:active 态用 useLocation 推断 + group-hover
+    │   ├── WorkCard.jsx       # 单张作品卡(slug 缺失返回 null 防御)+ aspect-ratio + reduced-motion
     │   ├── ScrollToTop.jsx    # 路由切换自动滚回顶部
-    │   └── Seo.jsx            # 路由级 <title>/<meta> 封装(React 19 原生 hoist)
+    │   ├── Seo.jsx            # 路由级 <title>/<meta> 封装(React 19 原生 hoist)
+    │   ├── Modal.jsx          # 灯箱系统:Provider + 长图 hover-follow + click-zoom + drag-pan
+    │   ├── WorkImgContainer.jsx  # 自动 webp + 注册 LightboxGallery + 点击触发 modal
+    │   ├── LightboxGallery.jsx   # 收集页内图片为 array,点击触发 ModalProvider.open
+    │   ├── modal-context.js / lightbox-gallery-context.js  # Context 分离
     ├── data/
     │   └── works-index.js     # 作品索引(slug/title/img/alt),静态 import
     ├── works/
-    │   ├── nybs.mdx           # 9 个作品内容 + `export const meta = {...}`
+    │   ├── nybs.mdx           # 9 个作品内容 + `export const meta = {...}`(注意 NYBS 走 section-3img 三图布局)
     │   ├── wilderness-rescue.mdx
     │   ├── orb-starseeker.mdx
     │   ├── form-of-vertebra.mdx
@@ -59,33 +67,28 @@ app/
     │   ├── sonder.mdx
     │   └── plagiarism.mdx
     ├── pages/
-    │   ├── HomePage.jsx       # import worksIndex → 渲染卡片网格
-    │   ├── AboutPage.jsx      # 静态 About 内容(待 Phase 5 数据化)
-    │   ├── WorkDetailPage.jsx # import.meta.glob 找 MDX → 渲染 meta + body
+    │   ├── HomePage.jsx       # import worksIndex → 渲染 4 列响应网格(1310→3 / 900→2 / 490→1)
+    │   ├── AboutPage.jsx      # 静态 About 内容(monospace paragraph 体系)
+    │   ├── WorkDetailPage.jsx # import.meta.glob 找 MDX → 渲染 meta + LightboxGallery + body
     │   └── NotFoundPage.jsx   # 404 页
     ├── styles/
-    │   └── tailwind.css       # Tailwind v4 CSS-first 入口:@import "tailwindcss" + @theme token + base/utilities
-    └── *.css                  # 按职责拆分的全局样式表(见下)
+    │   ├── tailwind.css       # Tailwind v4 入口 + @theme(token + 6 个自定义断点) + @layer base + @font-face + @layer utilities
+    │   └── markup.js         # 11 个 Tailwind class 常量字符串,供 WorkDetailPage + 9 个 MDX 共用
+    └── modal.css              # 灯箱 scoped 组件级 CSS(keyframe / dots / zoom hint)
 ```
 
-CSS 按职责拆分,全部通过 `main.jsx`(tailwind.css) 与 `App.jsx`(其余) import:
+CSS 当前仅 2 个文件:
 
-| 文件 | 职责 |
-|---|---|
-| `styles/tailwind.css` | **Tailwind v4 入口**:`@import "tailwindcss"` + `@theme` token 镜像 + `@layer base`(box-sizing、a{text-decoration:none}) + `@layer utilities`(button:focus-visible、.sr-only) |
-| `styleguide.css` | **设计 token**:颜色/字体/字号/side-padding/card-ratio/gap-after-nav/work-section-gap |
-| `shared.css` | `.home / .about / .work` 根容器 + `.navigation` navbar 样式(含响应式对齐) |
-| `index.css` | Home `.works` 网格 + `.sector-item` 卡片样式 |
-| `about.css` | About 页样式(以 `.about` 为作用域前缀) |
-| `works.css` | Work detail 页通用容器/标题/图文样式 + 三层亲密性梯度(unit/header/gallery) |
-| `modal.css` | 图片灯箱(待 Phase 5 启用) |
-| `NYBS.css` | NYBS 项目专用 overrides(已迁完) |
+| 文件 | 职责 | 入口 |
+|---|---|---|
+| `styles/tailwind.css` | **全局**:Tailwind v4 入口 + `@theme`(brand 色 / 字体 / 6 个自定义断点 / layout spacing / clamp 字号等 token) + `@layer base`(box-sizing、`a{text-decoration:none}`、`@font-face`、`button:focus-visible`、body) + `@layer utilities`(`.sr-only`)+ 响应式 `:root --side-padding` override | `main.jsx` |
+| `modal.css` | **组件级 scoped**:灯箱 keyframe + `.modal` overlay + `.modal-dot` / `.modal-content-long` / `.modal-content-zoomed` / `.modal-long-hint-zoomed` (5b 长图 pan/zoom) | `components/Modal.jsx` |
 
 ---
 
 ## 设计系统
 
-### 颜色 token(`styleguide.css`)
+### 颜色 token(`tailwind.css` → `@theme`)
 
 | 变量 | 值 | 用途 |
 |---|---|---|
@@ -143,25 +146,24 @@ navbar 高度与纵向 padding 也用 `clamp()`,视口连续变化,768 断点处
 | ≤768px | `20px` |
 | ≤390px | `16px` |
 
-**单变量原则**:`.navigation`(navbar) 与 `.home .works`(卡片网格) 都用 `var(--side-padding)`,谁都不另叠 padding,所以无论视口宽到哪一档,首卡左缘永远与 `likai.wang` logo 左缘对齐,末卡右缘永远与 `RESUME` 右缘对齐。
+**单变量原则**:`Navbar.jsx` header 与 `HomePage.jsx` works grid 都用 `px-[var(--side-padding)]`,谁都不另叠 padding,所以无论视口宽到哪一档,首卡左缘永远与 `likai.wang` logo 左缘对齐,末卡右缘永远与 `RESUME` 右缘对齐。
 
 ### 2. 华夫饼网格(Home 卡片)
 
-`.home .works` 用 CSS Grid 布死列数,`aspect-ratio` 锁卡片比例:
+`HomePage.jsx` 用 CSS Grid(`grid-cols-4` 等工具),`aspect-[var(--card-ratio)]` 锁卡片比例:
 
-```css
-.home .works {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);   /* 默认 4 列 */
-  gap: 10px 20px;                           /* 行 10 / 列 20 */
-  padding: 0 var(--side-padding);
-  max-width: 1720px;
-  margin: 0 auto;
-}
-@media (max-width:1310px){ .home .works{ grid-template-columns:repeat(3,1fr); } }
-@media (max-width:900px) { .home .works{ grid-template-columns:repeat(2,1fr); } }
-@media (max-width:490px) { .home .works{ grid-template-columns:repeat(1,1fr); } }
+```jsx
+<section
+  id="works-list"
+  className="grid grid-cols-4 gap-y-2.5 gap-x-5 mx-auto w-full max-w-[1720px] px-[var(--side-padding)] max-wide:grid-cols-3 max-desktop:grid-cols-2 max-mini:grid-cols-1"
+>
+  {worksIndex.map((work) => (
+    <WorkCard key={work.slug} work={work} />
+  ))}
+</section>
 ```
+
+`max-wide / max-desktop / max-tablet / max-navcol / max-mini / max-ultra` 是 `tailwind.css @theme` 里定义的 6 个自定义断点(取值 `1311 / 901 / 769 / 501 / 491 / 391`),`max-` 前缀映射成 `max-width:${N-1}px`,所以 `max-wide:grid-cols-3` = 视口 ≤1310 时 3 列。
 
 | 视口 | 列数 |
 |---|---|
@@ -170,26 +172,25 @@ navbar 高度与纵向 padding 也用 `clamp()`,视口连续变化,768 断点处
 | ≤900 | 2 |
 | ≤490 | 1 |
 
-卡片比例抽出为 `--card-ratio: 390 / 250`,便于未来 Work detail 页换 16/9 等不同比例。
+卡片比例抽出为 `--card-ratio: 390 / 250`,在不同场景可换 16/9 等不同比例(WorkImgContainer 不带 aspect-ratio,只 WorkCard 用)。
 
 ### 3. Navbar active 态
 
-`Navbar.jsx` 用 `useLocation` 推断 active tab,加 `active` class:
+`Navbar.jsx` 用 `useLocation` 推断 active tab,在 `<Link>` className 上加 `group-hover` + `group-active` 工具字符:
 - 路径 `/` 或 `/work/*` → `WORK` active
 - 路径 `/about` → `ABOUT` active
 - `RESUME` 是外链 PDF,没有 active 态
 
-CSS 上 `.nav-item.active a` 与 `:hover a` 共用同一组强调样式(变深 + 加粗)。
+每个 nav-item 的外层 `<div>` 用 `group` class 成 group 容器,内层 link 用 `group-hover:text-[var(--color-brand-900)] group-hover:font-semibold` — 与 `text-[var(--color-brand-900)] font-semibold` active 态共用同一组强调样式(变深 + 加粗)。
 
 ### 4. 路由根容器
 
-`App.jsx` 根据 `useLocation().pathname` 切换根容器 class:
-- `/` → **`home`**(HomePage) — 命中 `index.css` 的 `.home .xxx` 作用域
-- `/about` → **`about`**(AboutPage) — 命中 `about.css` 的 `.about .xxx` 作用域
-- `/work/*` → **`work`**(WorkDetailPage) — 不命中以上两者,避免 `.home .sector-item { aspect-ratio }` 误裁等污染
-- 其它 → `home`(NotFoundPage 共用 home 容器无副作用)
+`App.jsx` 根据 `useLocation().pathname` 计算 `page` 字符串,挂在根 div 的 `data-page` 属性上(仅作诊断与 DevTools 选择器探查):
+- `/` / `/about` / `/work/*` / 其它 → `home` / `about` / `work` / `home`
 
-三个 class 在 `shared.css` 里共用同一 flex column layout(首页 hero / about 内容 / work 详情都用根容器 + `--gap-after-nav`)。
+⚠️ **历史架构 → Phase 4b 后已取消**:4b 前曾经 `.home / .about / .work` 切根 class 作为 CSS 作用域前缀(命中 `index.css` / `about.css` / `works.css` 内对应 `.home .xxx` 规则)。4b 把这些 CSS 文件全部删除并改为 Tailwind utility 内联后,根 class 失去作用域意义,因此改为固定的 `flex flex-col min-h-screen gap-[var(--gap-after-nav)]` + 诊断 attr。
+
+历史上曾经因把 `/work/*` 也标成 `.home`,触发 `.home .sector-item { aspect-ratio }` 误命中 work detail 页图片、产生 127px 空白的 bug —— 这种"作用域污染"在新架构下不再可能发生(根 div 不再有动态 CSS class)。
 
 ---
 
@@ -224,10 +225,11 @@ CSS 上 `.nav-item.active a` 与 `:hover a` 共用同一组强调样式(变深 +
 **作品 MDX 内部约定**:
 - 文件顶部必须有 `export const meta = { title, subtitle, description, ... }`
 - body 内容用 JSX 语法写(MDX 不支持裸 HTML 风格,`class=` → `className=`、`<br>` → `<br />`、`allowfullscreen` → `allowFullScreen` 等)
-- 在文件顶部 `import '../works.css'` 与该作品专用 CSS(如 `'../NYBS.css'`)
-- feature 段用 `.feature-unit` 包父(见下文「三层亲密性梯度」)
-- self-identity 的描述在 `WorkDetailPage.jsx` 里用 `.work-description` 类,MDX 里用的 `.description` 仅承载 feature 段正文,两者**不要混用**
-- 灯箱按钮(`+ Enlarge`)**已删除占位代码**,Phase 5 实现灯箱时再统一加 mdx 内的按钮 markup 与对应 CSS
+- 在文件顶部 `import WorkImgContainer` 与需要的常量 from `'../styles/markup'`(`sectionImgCls`、`featureUnitCls` 等)
+- 每个图段用 `<WorkImgContainer src=... alt=... />`(自动 webp + 自动注册到 LightboxGallery;无需手写 `<picture>`)
+- feature 段用 `featureUnitCls` 包父(见下文「三层亲密性梯度」)
+- self-identity 级别的描述常量名是 `workDescriptionWrapCls`,feature 段正文用的是 `descriptionCls`,两者**不要混用**
+- 灯箱系统零配置:MDX 只写 `<WorkImgContainer>`,点击行为由组件统一处理;无需手写 "Enlarge" 按钮
 
 ---
 
@@ -238,24 +240,24 @@ CSS 上 `.nav-item.active a` 与 `:hover a` 共用同一组强调样式(变深 +
 ### 结构
 
 ```
-.container (gap 24px)                     ← 第 3 层:unit ↔ unit,独立分界
-├── self-identity                         (顶部框架,无 unit 包裹)
-├── section-img / section-2img            (纯图段,无 title,作为独立 unit)
-└── .feature-unit (gap 16px)              ← 第 2 层:header ↔ gallery,同 unit
-    ├── .feature-header (gap 8px)         ← 第 1 层:title ↔ description,最亲密
-    │   ├── .feature > .featuretitle
-    │   └── .description
-    └── .feature-gallery
-        └── .section-2img / .section-img
+WorkDetailPage @ workDetailContainerCls (gap --work-section-gap=24px)   ← 第 3 层:unit ↔ unit
+├── selfIdentityCls                                            (顶部框架)
+├── sectionImgCls / section2imgCls                             (纯图段,作为独立 unit)
+└── featureUnitCls (gap 4 / gap-y-4 = 16px)                    ← 第 2 层:header ↔ gallery
+    ├── featureHeaderCls (gap 2 = 8px)                        ← 第 1 层:title ↔ description
+    │   ├── featureCls > featuretitleCls
+    │   └── descriptionCls
+    └── featureGalleryCls
+        └── section2imgCls / sectionImgCls
 ```
 
 ### 三档 gap
 
 | 层级 | 元素 | gap | 含义 |
 |---|---|---|---|
-| **1 最紧** | featuretitle ↔ description | **8px** | 同一 header 内,标题与正文紧贴 |
-| **2 较紧** | feature-header ↔ feature-gallery | **16px** | 同 unit 内,图文段紧接 header |
-| **3 较松** | unit ↔ unit | **24px**(`--work-section-gap`) | 不同 unit 独立区分 |
+| **1 最紧** | featuretitle ↔ description | **8px**(`gap 2` utility) | 同一 header 内,标题与正文紧贴 |
+| **2 较紧** | feature-header ↔ feature-gallery | **16px**(`gap-y-4` 或 `gap-4`) | 同 unit 内,图文段紧接 header |
+| **3 较松** | unit ↔ unit | **24px**(`var(--work-section-gap)`) | 不同 unit 独立区分 |
 
 ### 响应式行为
 
@@ -267,19 +269,39 @@ CSS 上 `.nav-item.active a` 与 `:hover a` 共用同一组强调样式(变深 +
 ### 写新 MDX 时的模板
 
 ```jsx
-<div className="feature-unit">
-  <div className="feature-header">
-    <div className="feature">
-      <b className="featuretitle">小标题</b>
+import WorkImgContainer from '../components/WorkImgContainer';
+import {
+  sectionImgCls,
+  sectionImgItemCls,
+  section2imgCls,
+  section2imgItemCls,
+  featureUnitCls,
+  featureHeaderCls,
+  featureCls,
+  featuretitleCls,
+  descriptionCls,
+  featureGalleryCls,
+} from '../styles/markup';
+
+export const meta = { title: '…', subtitle: '…', description: '…', tags: ['…'] };
+
+<div className={featureUnitCls}>
+  <div className={featureHeaderCls}>
+    <div className={featureCls}>
+      <b className={featuretitleCls}>小标题</b>
     </div>
-    <div className="description">
-      <p className="description">短描述</p>
+    <div className={descriptionCls}>
+      <p className={descriptionCls}>短描述</p>
     </div>
   </div>
-  <div className="feature-gallery">
-    <div className="section-2img">
-      <div className="sector-item">…图1</div>
-      <div className="sector-item">…图2</div>
+  <div className={featureGalleryCls}>
+    <div className={section2imgCls}>
+      <div className={section2imgItemCls}>
+        <WorkImgContainer src="/img/<project>/img1.png" alt="…" />
+      </div>
+      <div className={section2imgItemCls}>
+        <WorkImgContainer src="/img/<project>/img2.png" alt="…" />
+      </div>
     </div>
   </div>
 </div>
@@ -300,11 +322,15 @@ pnpm lint        # ESLint 检查
 
 ## 部署
 
-`.github/workflows/deploy.yml`:推送到 `main` 分支触发:
-1. `pnpm install` + `pnpm build`(工作目录 `./app`)
-2. `peaceiris/actions-gh-pages@v4` 把 `app/dist` 推到 `gh-pages` 分支
+`.github/workflows/deploy.yml`:推送到 `main` 分支触发(GitHub Actions):
+1. `pnpm/action-setup@v4`(version: 10)+ `actions/setup-node@v4`(node 24, pnpm cache)
+2. `pnpm install --frozen-lockfile`(工作目录 `./app`)
+3. `pnpm lint` (eslint 门禁)
+4. `pnpm test` (vitest run,3 个冒烟测试)
+5. `pnpm build`
+6. `peaceiris/actions-gh-pages@v4` 把 `app/dist` 推到 `gh-pages` 分支
 
-⚠️ 待办(Phase 6):CI 升 pnpm 版本(去掉固定 v8)、加 pnpm store 缓存、`pnpm lint && pnpm build` 双重门禁。
+启用 Pages:仓库 Settings → Pages → Source=`Deploy from a branch` → branch=`gh-pages` / `/ (root)`。
 
 ---
 
@@ -319,7 +345,7 @@ pnpm lint        # ESLint 检查
 | 5 | 图片优化(webp -89% 体积、picture 多源、CLS 防护)+ 灯箱重建(ModalProvider + WorkImgContainer + LightboxGallery + dots + 长图识别 + 键盘 ← → ESC + 切图无闪烁)+ a11y(focus-visible / ARIA / reduced-motion) | ✅ |
 | 4b | 把 `works.css` / `about.css` / `index.css` / `shared.css` / `styleguide.css` / `NYBS.css` 全部删除;所有 className 迁成 Tailwind utility 或集中到 `src/styles/markup.js`;token + 断点 + `@font-face` 全部搬到 `tailwind.css` 的 `@theme` / `@layer base` | ✅ |
 | 5b | 灯箱长图交互:hover 跟随 Y 轴扫描 + click 切换 1.8× 缩放 + 拖拽 pan + 键盘 ↑↓←→(单图模式下) + ESC 二段退出(zoom→close)+ reduced-motion 禁用过渡 | ✅ |
-| 6 | CI 升级(pnpm 版本 + 缓存 + lint 门禁)、最小冒烟测试 | ⚪ |
+| 6 | CI 升级:`pnpm/action-setup@v4`(version 10)+ `actions/setup-node@v4`(node 24 + pnpm cache)+ `pnpm lint && pnpm test && pnpm build` 三段门禁 + vitest 3 个冒烟测试(App renders / 9 work cards / 404 page) | ✅ |
 
 ---
 
