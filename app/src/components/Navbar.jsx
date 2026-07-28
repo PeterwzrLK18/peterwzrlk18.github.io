@@ -44,7 +44,7 @@ function Navbar() {
         </div>
         <div className="group">
           <a
-            href="/docs/王立凯 中文简历.docx.pdf"
+            href="/docs/Likai-Wang-Resume-CN.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className={navLinkBase}
