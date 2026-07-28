@@ -1,16 +1,22 @@
-name: Deploy app to GitHub Pages
+name: Build & Deploy to GitHub Pages
 
 on:
   push:
     branches:
       - main
+    tags:
+      - 'v*'
+  workflow_dispatch:
 
-# 让 gh-pages 部署有写权限(GITHUB_TOKEN 默认只读)
 permissions:
   contents: write
 
 jobs:
-  build-and-deploy:
+  # 1) CI: 质量门禁
+  #    触发条件:任何 push 到 main、任何 v* tag、手动 dispatch
+  #    作用:lint + test + build;通过后 deploy job 才会真正改 gh-pages
+  ci:
+    name: Lint + Test + Build
     runs-on: ubuntu-latest
 
     steps:
@@ -47,6 +53,41 @@ jobs:
         run: pnpm build
         working-directory: ./app
 
+  # 2) Deploy: 把 dist 推到 gh-pages 分支
+  #    只在(v* tag 被 push)或(workflow_dispatch 手动触发)时跑
+  #    依赖 ci job 通过——避免上线坏构建
+  deploy:
+    name: Deploy to gh-pages
+    runs-on: ubuntu-latest
+    needs: ci
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: app/pnpm-lock.yaml
+
+      - name: Install app dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: ./app
+
+      - name: Build app
+        run: pnpm build
+        working-directory: ./app
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
@@ -54,3 +95,5 @@ jobs:
           publish_dir: ./app/dist
           publish_branch: gh-pages
           keep_files: false
+          # tag 名字写入 commit message,gh-pages 历史一目了然
+          commit_message: 'deploy: ${{ github.ref_name }}'
