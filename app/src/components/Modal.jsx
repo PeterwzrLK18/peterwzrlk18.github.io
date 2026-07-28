@@ -6,6 +6,9 @@ const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
 const PAN_PX_PER_STEP = 60;
 const ZOOM_FACTOR = 1.8;
+// Below this movement the gesture is treated as a click, not a drag.
+// Prevents drag-release from firing a stray click that exits zoom mode.
+const DRAG_THRESHOLD_PX = 5;
 
 function ModalContent({ image, onClose, onNavigate, total, index }) {
   const [isLong, setIsLong] = useState(false);
@@ -121,7 +124,9 @@ function ModalContent({ image, onClose, onNavigate, total, index }) {
     setPan({ x: 0, y });
   };
 
-  // Enter drag-mode while zoomed.
+  // Enter drag-mode while zoomed. Track the mousedown position so that on
+  // mouseup we can decide whether the gesture was a click (tiny movement,
+  // toggles zoom) or a drag (real movement, just ends pan without exiting).
   const onMouseDown = (e) => {
     if (!zoomed) return;
     e.preventDefault();
@@ -131,6 +136,7 @@ function ModalContent({ image, onClose, onNavigate, total, index }) {
       startClientY: e.clientY,
       startPanX: pan.x ?? 0,
       startPanY: pan.y ?? 0,
+      moved: false,
     };
   };
 
@@ -140,6 +146,10 @@ function ModalContent({ image, onClose, onNavigate, total, index }) {
       const b = panBoundsRef.current;
       const dx = e.clientX - dragOffsetRef.current.startClientX;
       const dy = e.clientY - dragOffsetRef.current.startClientY;
+      if (!dragOffsetRef.current.moved &&
+          Math.abs(dx) + Math.abs(dy) > DRAG_THRESHOLD_PX) {
+        dragOffsetRef.current.moved = true;
+      }
       setPan({
         x: clamp(dragOffsetRef.current.startPanX + dx, -b.maxX, b.maxX),
         y: clamp(dragOffsetRef.current.startPanY + dy, -b.maxY, b.maxY),
@@ -168,10 +178,16 @@ function ModalContent({ image, onClose, onNavigate, total, index }) {
     setPan({ x: 0, y: 0, zoom: 1, dragging: false });
   };
 
-  // Click on long image toggles zoom.
+  // Click on long image toggles zoom. A click that immediately followed a
+// drag (moved=true) is suppressed so dragging doesn't exit zoom mode.
   const onImgClickToggle = (e) => {
     e.stopPropagation();
     if (!isLong) return;
+    if (dragOffsetRef.current.moved) {
+      // Just finished a drag; treat mouseup as the end of pan, not a click.
+      dragOffsetRef.current.moved = false;
+      return;
+    }
     if (zoomed) {
       setZoomed(false);
       setPan({ x: 0, y: 0, zoom: 1, dragging: false });
