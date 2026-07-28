@@ -24,7 +24,7 @@
 | 样式 | Tailwind v4 CSS-first:`@theme` 含 brand 色 + 字体 + 6 个自定义断点 + 所有响应 CSS 变量;`@layer base` 含 `@font-face` / `button:focus-visible`;app 内所有页面 className 改为 utility 字符串集中放 `src/styles/markup.js` |
 | 内容 | `@mdx-js/rollup` v3,作品内容按 `src/works/<slug>.mdx` 模块化 |
 | 包管理 | pnpm |
-| 部署 | GitHub Actions → `gh-pages` 分支 |
+| 部署 | GitHub Actions 双 job:`ci`(每次 push 验证)+ `deploy`(v* tag 或手动触发才上线)→ `gh-pages` 分支 |
 
 ---
 
@@ -320,15 +320,51 @@ pnpm lint        # ESLint 检查
 
 ## 部署
 
-`.github/workflows/deploy.yml`:推送到 `main` 分支触发(GitHub Actions):
-1. `pnpm/action-setup@v4`(version: 10)+ `actions/setup-node@v4`(node 24, pnpm cache)
-2. `pnpm install --frozen-lockfile`(工作目录 `./app`)
-3. `pnpm lint` (eslint 门禁)
-4. `pnpm test` (vitest run,3 个冒烟测试)
-5. `pnpm build`
-6. `peaceiris/actions-gh-pages@v4` 把 `app/dist` 推到 `gh-pages` 分支
+### Workflow 设计:`.github/workflows/deploy.yml`
 
-启用 Pages:仓库 Settings → Pages → `Deploy from a branch` → branch=`gh-pages` / `/ (root)`。部署后由于 GitHub Pages CDN 对 HTML 缓存 10 分钟(`Cache-Control: max-age=600`),更新上线可能延迟几分钟;**用户首次更新到新版本需要 Ctrl+Shift+R 强刷刷掉旧 JS bundle**(CI 部署日志会在 1–2 分钟内显示绿勾)。
+工作流拆成两个 job,通过**触发条件 + job 依赖**分离"质量门禁"与"上线":
+
+| Job | 跑什么 | 触发条件 |
+|---|---|---|
+| **ci**(Lint + Test + Build) | `pnpm lint` → `pnpm test` → `pnpm build`,**只验证不部署** | 任何 push 到 `main`、任何 `v*` tag、手动 `workflow_dispatch` |
+| **deploy**(Deploy to gh-pages) | 复跑 build → 把 `app/dist` 推到 `gh-pages` 分支 | 只在 `v*` tag 被 push 或手动 `workflow_dispatch` 时跑;且强依赖 `ci` job 通过 |
+
+> 这样**日常 push 只烧 CI 额度,不会动到 `gh-pages` 历史与线上版本**。只有符合"发版"语义的动作才会真正上线。
+
+### 发版流程(两种,任选其一)
+
+**A. 打 Tag 发版**(推荐,有版本记录):
+
+1. 先在本地或 GitHub Desktop 把所有改动 commit 并 push 到 `main`(CI 跑一遍验证)
+2. 等绿勾出现后,用 PowerShell / Git Bash 打 tag 并推上去:
+   ```powershell
+   git tag v1.0.0          # 改成你要的版本号
+   git push --tags         # 推 tag → CI 再跑一遍 → 自动 deploy
+   ```
+3. **GitHub Desktop 用户**:
+   - 命令行里 `git tag v1.0.0` 打一下 tag(GitHub Desktop 本身不支持直接打 tag,需要这步一次性命令)
+   - 之后再在 GitHub Desktop 里 `Repository` → `Push` 一次,tag 就跟着上去了
+   - 或者直接在 GitHub Web 界面 `Actions` → 选 workflow → 右上角有 `Run workflow` 按钮 → 选 `main` 分支 → Run
+4. `gh-pages` 上最新 commit 消息会是 `deploy: v1.0.0`,以后线上版本一目了然
+
+**B. 手动触发发版**(适合临时上线,不想要版本号):
+
+1. 浏览器打开 `https://github.com/PeterwzrLK18/peterwzrlk18.github.io/actions/workflows/deploy.yml`
+2. 右上角 `Run workflow` 按钮,弹窗里选 `main` 分支(不是 `gh-pages`)
+3. 点 `Run workflow` → CI 再跑一遍 → 通过后自动 deploy
+
+> 选 `main` 分支就是用 `main` 最新代码 build 然后部署;选 `gh-pages` 没意义(那分支已经是上次 build 的产物,不是源代码)。
+
+### 首次启用 Pages(只需做一次)
+
+仓库 Settings → Pages → `Deploy from a branch` → branch=`gh-pages` / `/ (root)` → Save。
+
+### 部署后注意事项
+
+- GitHub Pages CDN 对 HTML 缓存 10 分钟(`Cache-Control: max-age=600`),新代码上线可能延迟几分钟反映出来
+- **用户首次更新到新版本需要 Ctrl+Shift+R 强刷**,刷掉浏览器缓存的旧 JS bundle(CI/部署日志会在 1–2 分钟内显示绿勾)
+- 部署日志在 `https://github.com/PeterwzrLK18/peterwzrlk18.github.io/actions` 看;失败时会在 Actions 标签页显示红 ✗,点进去能看到具体哪一步崩了
+- `gh-pages` 分支**不要手动改**,它只由 peaceiris/action-gh-pages 在 deploy 时覆写;本地开发都在 `main`
 
 ---
 
@@ -351,6 +387,8 @@ pnpm lint        # ESLint 检查
 | D3 | `app/public/sitemap.xml`(11 个 URL,/ + /about + 9 个 work,priority 1.0/0.8/0.7)+ `app/public/robots.txt`(Allow all + sitemap 指针上线) | ✅ |
 | D3c | `NotFoundPage.jsx` Tailwind 整体化:Roboto Mono 巨 "404" + body-code 说明 + 描边 pill "Back to Home" 链接 + hover-fill + focus ring;移除 `.not-found` className 与为主样式 | ✅ |
 | D4 | Lighthouse / Web Vitals 实测(CI 已落地质量基线:webp + CLS 防护 + 缓存 + a11y,等部署稳定后跑一次留下分数) | ⚪ 待 run |
+| 5b-fix | Modal 拖拽 bug:拖拽放大图松手会因浏览器隐性 click 误退出 zoom;加 5px 阈值区分 click vs drag,moved=true 时吞掉这次 click | ✅ |
+| CI 拆分 | `deploy.yml` 拆 `ci`(每次 push 跑 lint/test/build)+ `deploy`(只在 v\* tag 或手动 workflow_dispatch 时跑)+ `deploy` 强依赖 `ci` 通过 | ✅ |
 
 ---
 
