@@ -20,7 +20,7 @@
   --color-primitives-slate-700: var(--color-brand-700);
   --color-primitives-gray-900: var(--color-brand-900);
 
-  /* ---- Semantic color aliases (used by shared/index/about/works.css) ---- */
+  /* ---- Semantic color aliases (mapping brand primitives to UI roles) ---- */
   --color-background-default-default: var(--color-paper);
   --color-text-brand-default: var(--color-brand-800);
   --color-text-brand-tertiary: var(--color-brand-500);

@@ -1,5 +1,6 @@
 // Shared Tailwind utility class strings used by MDX work pages and WorkDetailPage.
-// Extracted from works.css / NYBS.css after Phase 4b cleanup.
+// Centralized in Phase 4b to replace the deleted global CSS files
+// (works.css / NYBS.css / shared.css / index.css / about.css / styleguide.css).
 
 /* Layout primitives for work detail image sections */
 

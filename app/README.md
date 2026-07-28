@@ -353,16 +353,14 @@ pnpm lint        # ESLint 检查
 
 1. **单变量对齐**:横向 padding 永远走 `--side-padding`,别让任何容器另叠 padding,对齐会错位。
 2. **流体优先**:能用 `clamp()` 平滑过渡的属性(字号、纵向 padding、高度)优先流体化;只有与"离散节奏"强耦合的属性(列数切换、uppercase 开关)才用断点。
-3. **作用域前缀**:`.home .xxx` / `.about .xxx` / **`.work .xxx`** 这种前缀写法靠根容器 className 切换生效,新页加新前缀,别互相污染.
-4. **CSS 顺序敏感**:多个全局 CSS 同特异性时后 import 赢。新增 token 改 `styleguide.css`,新增组件改对应文件,别在 `App.css` 加东西(那剩 Vite 模板残留)。
-5. **slug 一致**:`works-data.json` 的 `slug` 必须与路由 `:slug` 一一对应,WorkCard 有 `if (!work.slug) return null` 防御但别依赖它。
-6. **页面根 class 必须与页面语义对应**(踩过的坑):  
-   `App.jsx` 的 `rootClass` 按 `location.pathname` 分发 —— `/about` → `.about`、`/work/*` → **`.work`**、其它 → `.home`。  
-   ⚠️ **曾经 bug**:一度把 `/work/*` 也设成 `.home`,导致 `index.css` 里的 `.home .sector-item { aspect-ratio: 390/250 }` 误命中 work detail 的图片容器,造成 sector-item 高度被裁成宽 ÷ (250/390) = 1038px,而内部 work-img-container 按图片原生 16:9 自撑 ~911px,差 127px 全是空白。新增任何 page 时,务必在 App.jsx 给它**独立的 rootClass**,否则 index.css / about.css 等可能意外污染。
+3. **作用域前缀(历史架构,Phase 4b 后已取消)**:4b 前曾经靠根容器 `.home / .about / .work` className 作为 CSS 作用域前缀,套配 `index.css / about.css / works.css` 内 `.xxx .yyy` 规则。4b 全部 CSS 文件已删除、所有的 className 改为 Tailwind utility,根 `div` 改用固定 utility 字符串 + `data-page` 诊断 attr —— 此机制不再适用,新增 page 直接用 JSX 内联 utility 即可,无 CSS 污染风险。
+4. **CSS 顺序敏感(历史)**:4b 前曾经多个全局 CSS 文件同特异性时后 import 赢。4b 后所有样式集中在 `src/styles/tailwind.css`(`@theme` + `@layer base/utilities` + `:root` 媒体查询)与 `src/styles/markup.js`(组件 class 常量),新增 token 入 `@theme`,新增组件 class 入 `markup.js`,别再在文件根写散 CSS。
+5. **slug 一致**:`src/data/works-index.js` 的 `slug` 必须与路由 `:slug` 一一对应,WorkCard 有 `if (!work.slug) return null` 防御但别依赖它。
+6. **(历史踩坑记录)`.home .sector-item aspect-ratio` bug**:曾经把 `/work/*` 也设成 `.home`,导致 `index.css` 里的 `.home .sector-item { aspect-ratio: 390/250 }` 误命中 work detail 的图片容器,造成 sector-item 高度被裁成宽 ÷ (250/390) = 1038px,而内部 work-img-container 按图片原生 16:9 自撑 ~911px,差 127px 全是空白。Phase 4b 全局 CSS 删完后 `aspect-[var(--card-ratio)]` 已 inline 到 `WorkCard.jsx`,只在 Home 卡片用,不会跨页污染;此处保留作历史教训。
 7. **`object-fit` + `width:100%` + `height:auto` 不要混用**:`object-fit: contain` 在 width 已撑满、height 已 auto 的情况下无意义,反而误导渲染。只有"容器尺寸固定,图片需裁剪填满"时才用 `object-fit`,否则让图自然按比例撑更稳。
-8. **flex 容器 `align-items` 默认 stretch**:并列子项高度不一致时,矮项会被拉到与高项等高,周围出现空白。两图并列(`.section-2img`)必须显式 `align-items: flex-start`,图片容器别同高才不空白。
-9. **单变量 padding 必须笼罩全站所有页面**(踩过的坑):about.css 早期 hardcode 了 `padding: 0 50/40/30/20` + 4 个 media query override,与全局 `--side-padding` 系统并存且漏 ≤390 段对齐。新增任何页或容器,横向 padding 一律走 `var(--side-padding)`,**不复制 hardcode 副本**,否则不同页对齐会跨断点漂移。
-10. **`.feature-unit` 是视觉单元的最小包裹**(架构原则):每个有标题的图文段必须包进 `.feature-unit`,header 与 gallery 之间用 unit gap 16px 表达"同 unit 归属感",unit 与 unit 之间用 container gap 24px 表达"独立分界"。无 title 的纯图段直接作独立 unit,不包 unit 包父。详见上文「三层亲密性梯度」。
+8. **flex 容器 `align-items` 默认 stretch**:并列子项高度不一致时,矮项会被拉到与高项等高,周围出现空白。两图并列(`section-2img` 对应 `section2imgCls`)必须显式 `items-start`,图片容器别同高才不空白。
+9. **单变量 padding 必须笼罩全站所有页面**(踩过的坑):早期 `about.css` hardcode 了 `padding: 0 50/40/30/20` + 4 个 media query override,与全局 `--side-padding` 系统并存且漏 ≤390 段对齐。Phase 4b 后所有页面横向 padding 走 `px-[var(--side-padding)]` utility,新增任何页或容器,**不复制 hardcode 副本**,直接走 `--side-padding`,否则不同页对齐会跨断点漂移。
+10. **`feature-unit` 是视觉单元的最小包裹**(架构原则):每个有标题的图文段必须包进 `featureUnitCls`,header 与 gallery 之间用 unit gap 16px 表达"同 unit 归属感",unit 与 unit 之间用 container gap 24px 表达"独立分界"。无 title 的纯图段直接作独立 unit,不包 unit 包父。详见上文「三层亲密性梯度」。
 11. **CSS 不要保留"迟早要用"的占位代码**:Phase 4 保留 `.enlarge-btn` 占位 18 行,Phase 4 收尾审计直接删掉。Phase 5 真做灯箱时按当时语义新建 markup + CSS,不期待"占位"还合用——避免 stale placeholder 误导后续维护。
 
 ---
