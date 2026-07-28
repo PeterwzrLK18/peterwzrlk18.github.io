@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://peterwzrlk18.github.io/</loc>
+    <priority>1.0</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://peterwzrlk18.github.io/about</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url><loc>https://peterwzrlk18.github.io/work/wilderness-rescue</loc><priority>0.7</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://peterwzrlk18.github.io/work/orb-starseeker</loc><priority>0.7</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://peterwzrlk18.github.io/work/form-of-vertebra</loc><priority>0.7</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://peterwzrlk18.github.io/work/comfypad</loc><priority>0.7</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://peterwzrlk18.github.io/work/nybs</loc><priority>0.7</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://peterwzrlk18.github.io/work/cellphone-info</loc><priority>0.7</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://peterwzrlk18.github.io/work/italian-cookbook</loc><priority>0.7</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://peterwzrlk18.github.io/work/sonder</loc><priority>0.7</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://peterwzrlk18.github.io/work/plagiarism</loc><priority>0.7</priority><changefreq>yearly</changefreq></url>
+</urlset>
