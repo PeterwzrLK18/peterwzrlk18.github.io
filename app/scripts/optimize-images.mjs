@@ -18,10 +18,23 @@
 // (net effect ~0, since max-1920 won't downscale further).
 
 import sharp from 'sharp';
-import { readdirSync, statSync, mkdirSync, renameSync, existsSync, copyFileSync } from 'node:fs';
+import { readdirSync, statSync, mkdirSync, renameSync, existsSync, copyFileSync, unlinkSync } from 'node:fs';
 import { join, extname, basename, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { dirname as pathDirname } from 'node:path';
+
+// Replace a target file with a freshly-rendered tmp file, handling the
+// Windows quirk where rename can fail if a handle is still open. Falls
+// back to copy+unlink so no .tmp files get stranded in the repo.
+function commitTmp(tmpPath, finalPath) {
+  if (existsSync(finalPath)) unlinkSync(finalPath);
+  try {
+    renameSync(tmpPath, finalPath);
+  } catch {
+    copyFileSync(tmpPath, finalPath);
+    unlinkSync(tmpPath);
+  }
+}
 
 const __dirname = pathDirname(fileURLToPath(import.meta.url));
 const IMG_ROOT = join(__dirname, '..', 'public', 'img');
@@ -83,7 +96,7 @@ if (master === masterPng && existsSync(masterPng) && !existsSync(join(fullresDir
   if (resize) pipeline.resize(resize);
   await pipeline.webp({ quality: WEBP_Q }).toFile(newWebp + '.tmp');
   // sharp.toFile refuses to overwrite the input; rename.
-  renameSync(newWebp + '.tmp', newWebp);
+  commitTmp(newWebp + '.tmp', newWebp);
 
   // 3. Render max-1920 q=85 PNG fallback (only if source was PNG or PNG exists).
   //    Skip if there's no PNG fallback (e.g. pure-webp assets) — keeps behaviour.
@@ -91,12 +104,8 @@ if (master === masterPng && existsSync(masterPng) && !existsSync(join(fullresDir
     const pipeline2 = sharp(master, { failOn: 'none' });
     if (resize) pipeline2.resize(resize);
     await pipeline2.png({ quality: PNG_Q, compressionLevel: 9, palette: true })
-                  .toFile(pngFallback + '.tmp');
-    if (pngFallback !== master) renameSync(pngFallback + '.tmp', pngFallback);
-    else {
-      // original master is gone (already moved); rename from tmp
-      renameSync(pngFallback + '.tmp', pngFallback);
-    }
+                   .toFile(pngFallback + '.tmp');
+    commitTmp(pngFallback + '.tmp', pngFallback);
   }
 
   stats.afterWebp = statSync(newWebp).size;
