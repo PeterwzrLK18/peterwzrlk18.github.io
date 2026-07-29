@@ -17,5 +17,8 @@ Thumbs.db
 # Migration source archive (local reference only, not pushed)
 archive_old/
 
+# Print-grade image masters (kept locally, not in git, NOT in dist)
+_fullres-img-backup/
+
 # Orphan npm lockfile (project uses pnpm -> app/pnpm-lock.yaml)
 package-lock.json
