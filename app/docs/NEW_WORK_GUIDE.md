@@ -21,7 +21,7 @@
   }
   ```
   > 命令需要 ImageMagick `magick` 已装。其他替代:`cwebp`(Google 官方 webp 编码器)、XnConvert(GUI)。
-- GIF 动图可以保留 `.gif` 扩展直接放进目录(无需转 webp,代码对非 PNG 不处理)。
+- 动图不要直接放 GIF:先跑 `node app/scripts/convert-gifs.mjs` 转成同名 `.webm` + `.mp4`(原 GIF 自动备份到根目录 `_fullres-img-backup/gif-backup/`),MDX 里 `src` 写 `.webm` 路径即可 —— `WorkImgContainer` 会自动渲染 `<video autoplay muted loop playsInline>`,且**不会**注册进灯箱(参考 `sonder.mdx`)。
 
 ---
 
@@ -55,6 +55,7 @@ import {
   featureCls,
   featuretitleCls,
   descriptionCls,
+  descriptionTextCls,
   featureGalleryCls,
 } from '../styles/markup';
 
@@ -77,7 +78,7 @@ export const meta = {
       <b className={featuretitleCls}>背景研究:<br />问题的边界在哪里</b>
     </div>
     <div className={descriptionCls}>
-      <p className={descriptionCls}>简述这一段的内容,2-3 句话即可。</p>
+      <p className={descriptionTextCls}>简述这一段的内容,2-3 句话即可。</p>
     </div>
   </div>
   <div className={featureGalleryCls}>
@@ -212,7 +213,7 @@ GitHub Actions 会跑 lint → test → build → deploy 到 `gh-pages`。1–2 
 
 ## 参考文件
 
-- **`src/styles/markup.js`** — 11 个 class 常量,所有 9 个作品都从这取;新增 work 不需要往里面加常量,直接复用现有
+- **`src/styles/markup.js`** — 21 个 class 常量,所有 9 个作品都从这取;新增 work 不需要往里面加常量,直接复用现有
 - **`src/components/WorkImgContainer.jsx`** — 万能图容器,自动处理 webp source / 注册灯箱 / 焦点环 / key.onKeyDown
 - **`src/components/Modal.jsx`** — 灯箱系统:5b 加的 pan-zoom / hover-follow 全在这里,新 work 不需要碰
 - **`README.md` § 三层亲密性梯度** — unit / header / gallery 三层嵌套的设计准则,决定 `<div className={featureUnitCls}>` 何时使用

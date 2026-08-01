@@ -12,7 +12,7 @@ function HomePage() {
       />
       <section
         id="works-list"
-        className="grid grid-cols-4 gap-y-2.5 gap-x-5 mx-auto w-full max-w-[1720px] px-[var(--side-padding)] max-wide:grid-cols-3 max-desktop:grid-cols-2 max-mini:grid-cols-1"
+        className="grid grid-cols-4 gap-y-5 gap-x-5 mx-auto w-full max-w-[1720px] px-[var(--side-padding)] max-wide:grid-cols-3 max-desktop:grid-cols-2 max-mini:grid-cols-1"
       >
         {worksIndex.map((work) => (
           <WorkCard key={work.slug} work={work} />

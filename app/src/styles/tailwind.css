@@ -30,7 +30,7 @@
   /* ---- Layout spacing tokens ---- */
   --side-padding: 50px;
   --gap-after-nav: clamp(16px, calc(16px + 24 * (1310px - 100vw) / 810), 40px);
-  --work-section-gap: 24px;
+  --work-section-gap: 20px;
   --card-ratio: 390 / 250;
 
   /* ---- Custom breakpoints (Tailwind breakpoints are min-width;
@@ -105,12 +105,14 @@
   :root { --side-padding: 40px; }
 }
 @media (max-width: 900px) {
-  :root { --side-padding: 30px; }
+  :root {
+    --side-padding: 30px;
+    --work-section-gap: 10px;
+  }
 }
 @media (max-width: 768px) {
   :root {
     --side-padding: 20px;
-    --work-section-gap: 16px;
   }
 }
 @media (max-width: 490px) {
