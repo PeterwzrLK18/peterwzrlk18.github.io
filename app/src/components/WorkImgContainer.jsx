@@ -4,13 +4,27 @@ import { useLightboxGallery } from './lightbox-gallery-context';
 const containerBase =
   'block relative w-full cursor-pointer focus-visible:outline-2 focus-visible:outline-[#4a90e2] focus-visible:outline-offset-2';
 const imgBase = 'block w-full h-auto';
+const videoBase = 'block w-full h-auto';
+
+// Detects animated/animated sources — currently .webm and .mp4 — that
+// should render via <video autoPlay muted loop playsInline> instead of
+// the picture/img-pair used for static images. They are intentionally
+// excluded from lightbox registration (the gallery context collects
+// stills only) because <video> inside the modal would need its own
+// playback handling.
+function isVideoSrc(src) {
+  return /\.(webm|mp4)(\?|$)/i.test(src);
+}
 
 function WorkImgContainer({ src, alt, className = '' }) {
   const gallery = useLightboxGallery();
   const indexRef = useRef(-1);
   const entryRef = useRef(null);
 
+  const isVideo = isVideoSrc(src);
+
   useEffect(() => {
+    if (isVideo) return; // videos don't register with the lightbox
     entryRef.current = { src, alt };
     indexRef.current = gallery.register(entryRef.current);
     return () => {
@@ -18,11 +32,38 @@ function WorkImgContainer({ src, alt, className = '' }) {
         gallery.unregister(indexRef.current, entryRef.current);
       }
     };
-  }, [src, alt, gallery]);
+  }, [src, alt, gallery, isVideo]);
 
   const cls = className ? `${containerBase} ${className}` : containerBase;
   const isPng = /\.png$/i.test(src);
   const webpSrc = isPng ? src.replace(/\.png$/i, '.webp') : null;
+
+  // Video path: render an autoplaying muted loop inline. iOS Safari
+  // requires `muted` + `playsInline` (both are ES-write props below).
+  if (isVideo) {
+    const webmSrc = src.replace(/\.(webm|mp4)$/i, '.webm');
+    const mp4Src = src.replace(/\.(webm|mp4)$/i, '.mp4');
+    return (
+      <div
+        className={`${cls} cursor-default`}
+        role="img"
+        aria-label={alt}
+      >
+        <video
+          className={videoBase}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-label={alt}
+        >
+          <source src={webmSrc} type="video/webm" />
+          <source src={mp4Src} type="video/mp4" />
+        </video>
+      </div>
+    );
+  }
 
   return (
     <div
