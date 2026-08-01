@@ -3,14 +3,12 @@ import { useLightboxGallery } from './lightbox-gallery-context';
 
 const containerBase =
   'block relative w-full cursor-pointer focus-visible:outline-2 focus-visible:outline-[#4a90e2] focus-visible:outline-offset-2';
-const imgBase = 'block w-full h-auto';
-const videoBase = 'block w-full h-auto';
+const mediaBase = 'block w-full h-auto';
 
-// Detects animated/animated sources — currently .webm and .mp4 — that
-// should render via <video autoPlay muted loop playsInline> instead of
-// the picture/img-pair used for static images. They are intentionally
-// excluded from lightbox registration (the gallery context collects
-// stills only) because <video> inside the modal would need its own
+// Detects animated sources (.webm / .mp4) that should render via
+// <video autoPlay muted loop playsInline> instead of the picture/img
+// pair used for static images. Videos are excluded from lightbox
+// registration because <video> inside the modal would need its own
 // playback handling.
 function isVideoSrc(src) {
   return /\.(webm|mp4)(\?|$)/i.test(src);
@@ -38,19 +36,13 @@ function WorkImgContainer({ src, alt, className = '' }) {
   const isPng = /\.png$/i.test(src);
   const webpSrc = isPng ? src.replace(/\.png$/i, '.webp') : null;
 
-  // Video path: render an autoplaying muted loop inline. iOS Safari
-  // requires `muted` + `playsInline` (both are ES-write props below).
   if (isVideo) {
     const webmSrc = src.replace(/\.(webm|mp4)$/i, '.webm');
     const mp4Src = src.replace(/\.(webm|mp4)$/i, '.mp4');
     return (
-      <div
-        className={`${cls} cursor-default`}
-        role="img"
-        aria-label={alt}
-      >
+      <div className={`${cls} cursor-default`} role="img" aria-label={alt}>
         <video
-          className={videoBase}
+          className={mediaBase}
           autoPlay
           muted
           loop
@@ -83,7 +75,7 @@ function WorkImgContainer({ src, alt, className = '' }) {
         <picture>
           <source srcSet={webpSrc} type="image/webp" />
           <img
-            className={imgBase}
+            className={mediaBase}
             src={src}
             alt={alt}
             loading="lazy"
@@ -92,7 +84,7 @@ function WorkImgContainer({ src, alt, className = '' }) {
         </picture>
       ) : (
         <img
-          className={imgBase}
+          className={mediaBase}
           src={src}
           alt={alt}
           loading="lazy"

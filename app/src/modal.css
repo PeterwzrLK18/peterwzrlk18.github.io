@@ -94,7 +94,7 @@
   transform: translateX(-50%);
   background: rgba(0, 0, 0, 0.6);
   color: #fff;
-  font-family: var(--body-code-font-family);
+  font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.05em;
   padding: 6px 12px;

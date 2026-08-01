@@ -1,6 +1,8 @@
 {
-  "name": "MyWebSite",
-  "short_name": "MySite",
+  "name": "Likai Wang — Portfolio",
+  "short_name": "Likai Wang",
+  "description": "Likai Wang's portfolio showcasing his work and experience in design and development.",
+  "start_url": "/",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
