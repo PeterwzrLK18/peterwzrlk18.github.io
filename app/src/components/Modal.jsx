@@ -21,6 +21,7 @@ function ModalContent({ image, onClose, onNavigate, total, index }) {
 
   const containerRef = useRef(null);
   const imgRef = useRef(null);
+  const rootRef = useRef(null);
   const dragOffsetRef = useRef({ startClientX: 0, startClientY: 0, startPanX: 0, startPanY: 0 });
   const panBoundsRef = useRef({ maxX: 0, maxY: 0 });
 
@@ -36,6 +37,38 @@ function ModalContent({ image, onClose, onNavigate, total, index }) {
 
     const onKey = (e) => {
       const s = stateRef.current;
+      if (e.key === 'Tab') {
+        // Focus trap: keep Tab / Shift+Tab cycling inside the modal instead of
+        // letting focus leak to the page behind the overlay.
+        const root = rootRef.current;
+        if (!root) return;
+        const focusables = Array.from(
+          root.querySelectorAll(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+          ),
+        ).filter((el) => {
+          if (el.hasAttribute('disabled')) return false;
+          const style = window.getComputedStyle(el);
+          return style.display !== 'none' && style.visibility !== 'hidden';
+        });
+        if (focusables.length === 0) {
+          e.preventDefault();
+          root.focus();
+          return;
+        }
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey) {
+          if (document.activeElement === first || !root.contains(document.activeElement)) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else if (document.activeElement === last || !root.contains(document.activeElement)) {
+          e.preventDefault();
+          first.focus();
+        }
+        return;
+      }
       if (e.key === 'Escape') {
         if (s.zoomed) {
           setZoomed(false);
@@ -46,6 +79,8 @@ function ModalContent({ image, onClose, onNavigate, total, index }) {
         return;
       }
       if (e.key === 'Enter' || e.key === ' ') {
+        // Don't hijack native activation of buttons/links (close button, dots).
+        if (e.target instanceof HTMLElement && e.target.closest('button, a, input, select, textarea')) return;
         if (s.isLong) {
           e.preventDefault();
           if (s.zoomed) {
@@ -205,6 +240,7 @@ function ModalContent({ image, onClose, onNavigate, total, index }) {
 
   return (
     <div
+      ref={rootRef}
       className={`modal${isLong ? ' modal-long' : ''}`}
       role="dialog"
       aria-modal="true"
@@ -238,6 +274,7 @@ function ModalContent({ image, onClose, onNavigate, total, index }) {
           onLoad={onLoad}
           onClick={onImgClickToggle}
           draggable={false}
+          tabIndex={0}
         />
         {isLong && !zoomed && (
           <div className="modal-long-hint" aria-hidden="true">
@@ -290,12 +327,23 @@ function Modal({ images, currentIndex, onClose, onNavigate }) {
 
 export function ModalProvider({ children }) {
   const [state, setState] = useState({ images: [], index: 0 });
+  // Element that opened the modal — focus returns to it when the modal closes.
+  const triggerRef = useRef(null);
 
   const open = useCallback((images, startIndex) => {
+    triggerRef.current = document.activeElement;
     setState({ images, index: startIndex });
   }, []);
 
-  const close = useCallback(() => setState({ images: [], index: 0 }), []);
+  const close = useCallback(() => {
+    setState({ images: [], index: 0 });
+    // Restore focus to the original trigger element.
+    const trigger = triggerRef.current;
+    triggerRef.current = null;
+    if (trigger && typeof trigger.focus === 'function') {
+      trigger.focus();
+    }
+  }, []);
 
   const navigate = useCallback((idx) => {
     setState((s) => ({ ...s, index: idx }));
