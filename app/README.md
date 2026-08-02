@@ -79,7 +79,7 @@ app/
     │   └── url.js             # absoluteUrl(path) — 拼绝对 URL + encodeURI,社交卡 OG/Twitter 用
     ├── styles/
     │   ├── tailwind.css       # Tailwind v4 入口 + @theme(token + 6 个自定义断点) + @layer base + @font-face + @layer utilities
-    │   └── markup.js          # 21 个 Tailwind class 常量,供 WorkDetailPage + 9 个 MDX 共用(含 section3imgCls NYBS 三图 / iframeContainerCls / descriptionTextCls)
+    │   └── markup.js          # 23 个 Tailwind class 常量,供 WorkDetailPage + 9 个 MDX 共用(含 section3imgCls NYBS 三图 / featureBlockGroupCls 块间×2 / iframeContainerCls / descriptionTextCls)
     └── modal.css              # 灯箱 scoped 组件级 CSS(keyframe / dots / zoom hint / 5b pan 助动)
 ```
 
@@ -121,12 +121,15 @@ CSS 当前仅 2 个文件:
 
 避免断点处 cliff 跳变,核心字号全部内联为 `clamp(min, preferred, max)` utility(集中在 `markup.js` 各常量与 Navbar/WorkCard),在视口区间内连续变化:
 
-| 位置 | 表达式 | 大屏(≥1200px) | 768px | 320px |
-|---|---|---|---|---|
-| 作品标题 `titleBlockCls` | `clamp(28px, 1.5rem + 2vw, 48px)` | 48px | ~32.8px | 28px |
-| 副标题 `worksubtitleCls` | `clamp(16px, 0.8rem + 0.6vw, 20px)` | 20px | ~17.4px | 16px |
-| 正文 `featuretitleCls / descriptionTextCls / workDescriptionTextCls` | `clamp(14px, 0.6rem + 0.9vw, 24px)` | 24px | ~16.5px | 14px |
-| Navbar logo / Home 卡片标题 | `clamp(14px, 0.6rem + 0.9vw, 24px)` | 24px | ~16.5px | 14px |
+> clamp 只在其生效区间随视口连续变化;**一旦 ≤768**,大部分元素由下面 `max-tablet` 断点 token 接管(见下),不再是 clamp 数值。下表左表为 clamp 满档,右列为 ≤768 的实际接管值。
+
+| 位置 | clamp 表达式 | >1200px 顶格 | ≤768(断点接管) |
+|---|---|---|---|
+| 作品标题 `titleBlockCls` | `clamp(28px, 1.5rem + 2vw, 48px)` | 48px | `--fs-h1`(768–491:28 / 490–391:25 / ≤390:23) |
+| 副标题 `worksubtitleCls` | `clamp(16px, 0.8rem + 0.6vw, 20px)` | 20px | 恒定 `text-[12px]` |
+| 正文 `featuretitleCls / descriptionTextCls / workDescriptionTextCls` | `clamp(14px, 0.6rem + 0.9vw, 24px)` | 24px | `--fs-h2`(768–491:20 / 490–391:18 / ≤390:17) |
+| Navbar logo `brandLinkClass` | `clamp(14px, 0.6rem + 0.9vw, 24px)` | 24px | `text-[12px]` + uppercase |
+| Home 卡片标题(`WorkCard.jsx` 的 `<h2>`) | `clamp(14px, 0.6rem + 0.9vw, 24px)` | 24px | **无断点覆盖**,全程 clamp(最小 14px) |
 
 移动端专用字号 token(`--fs-h1` / `--fs-h2` / `--fs-body` + `--lh-tight` / `--lh-normal`)用于 Work detail 页等强结构化排版,仍是断点式(768/490/390 三档,`tailwind.css` 底部媒体查询里递减),保留设计节奏。
 
@@ -239,44 +242,56 @@ navbar 高度与纵向 padding 也用 `clamp()`,视口连续变化,768 断点处
 - body 内容用 JSX 语法写(MDX 不支持裸 HTML 风格,`class=` → `className=`、`<br>` → `<br />`、`allowfullscreen` → `allowFullScreen` 等)
 - 在文件顶部 `import WorkImgContainer` 与需要的常量 from `'../styles/markup'`(`sectionImgCls`、`featureUnitCls` 等)
 - 每个图段用 `<WorkImgContainer src=... alt=... />`(自动 webp + 自动注册到 LightboxGallery;无需手写 `<picture>`)
-- feature 段用 `featureUnitCls` 包父(见下文「三层亲密性梯度」)
+- feature 段用 `featureUnitCls` 包父,多个连续 feature 段再用 `featureBlockGroupCls` 包组(见下文「间距与设计原则」)
 - self-identity 级别的描述是 `workDescriptionWrapCls`(外层 div,仅 layout)+ `workDescriptionTextCls`(内层 p,仅 typography);feature 段正文是 `descriptionCls`(外层 div)+ `descriptionTextCls`(内层 p)。**div 与 p 不要套同一个类名**,也别混用两组
 - 灯箱系统零配置:MDX 只写 `<WorkImgContainer>`,点击行为由组件统一处理;无需手写 "Enlarge" 按钮
 - **视频支持**:`src` 以 `.webm`/`.mp4` 结尾时,`WorkImgContainer` 自动渲染 `<video autoPlay muted loop playsInline>`(双 `<source>`:webm 优先 + mp4 兜底),并**不注册进灯箱**(示例:SONDER 的 4 段动图用 `.webm`);只有静态图(.png/.jpg)才走 picture→webp + 灯箱注册
 
 ---
 
-## 三层亲密性梯度(Proximity Principle)
+## 间距与设计原则(Proximity Principle)
 
-作品详情页的 visual unit 用三层嵌套 + 三档 gap 表达"亲密性"。核心思想来自格式塔 Proximity Principle —— 物理间距越近,读者越倾向于把它们读作同一组。
+**一句话:所有间距只分两档 —— 「组内 1×」和「组间 2×」.** 间距越近,读者越觉得它们属于同一组(格式塔 Proximity);用"组内紧凑、组间拉开"切分段落,令全篇图文节奏统一。
 
-### 结构
+| token | 值 | 用途 |
+|---|---|---|
+| `--work-section-gap` | 20px / ≤900 10px | **1× —— 组内部**:标题→封面、header→图组、图↔图、纯图各 section |
+| `--block-gap` | `calc(var(--work-section-gap) * 2)` → 40/20 | **2× —— 组之间**:feature 块之间、封面→首个 feature |
+
+**页面模型**:详情页顶层是一串「组件」——标题组件、封面/hero、feature 组件 1…n。规则只有两条:
+- 顶层组件**之间**用 **2×**(`--block-gap`)断开;
+- 每个组件**内部**用 **1×**(`--work-section-gap`)。
+- **标题+封面连成一个"开场组"(互相为 1×)**;它到第一个 feature 之间同样 2×。
+
+### 顶层结构
 
 ```
-WorkDetailPage @ workDetailContainerCls (gap --work-section-gap=20px)   ← 第 3 层:unit ↔ unit
-├── selfIdentityCls                                            (顶部框架)
-├── sectionImgCls / section2imgCls                             (纯图段,作为独立 unit)
-└── featureUnitCls (gap calc(--work-section-gap/2)=10px)        ← 第 2 层:header ↔ gallery
-    ├── featureHeaderCls (gap 2 = 8px)                        ← 第 1 层:title ↔ description
-    │   ├── featureCls > featuretitleCls
-    │   └── descriptionCls (wrapper) > descriptionTextCls
-    └── featureGalleryCls
-        └── section2imgCls / sectionImgCls
+WorkDetailPage @ workDetailContainerCls (gap --work-section-gap = 1×, 组件间基准)
+├── selfIdentityCls                  (标题组件:标题/副标题/描述;内部 1×)
+└── featureBlockGroupCls             ← "feature run":封面/hero + 全部 feature 都在此,块间 2×
+    │                                  title → run 顶部(即封面顶部)= 外层容器 1×
+    ├── 封面/hero (sectionImgCls / section2imgCls)  → 首个 feature 2×
+    ├── featureUnitCls    (单个 feature 块,内部 gap 1×)
+    │   ├── featureHeaderCls (gap 2 = 8px:title ↔ description)
+    │   └── featureGalleryCls (gap 1×:图 ↔ 图)
+    └── featureUnitCls …             (块间由 run 的 gap 2× 自动)
 ```
 
-### 三档 gap
+### 间距档位表
 
-| 层级 | 元素 | gap | 含义 |
+| 层级 | 元素 | 间距 | 说明 |
 |---|---|---|---|
-| **1 最紧** | featuretitle ↔ description | **8px**(`gap 2` utility) | 同一 header 内,标题与正文紧贴 |
-| **2 较紧** | feature-header ↔ feature-gallery | **10px**(`calc(var(--work-section-gap)/2)`) | 同 unit 内,图文段紧接 header |
-| **3 较松** | unit ↔ unit | **20px**(`var(--work-section-gap)`) | 不同 unit 独立区分 |
+| **标题↔正文** | `featuretitle` ↔ `description`(header 内) | `gap-2` = **8px** | header 单行内部,最紧凑 |
+| **段内 1×** | header↔gallery、图↔图、标题→封面、纯图 section↔section | **20/10**(`--work-section-gap`) | 同一组内统一 |
+| **段间 2×** | feature 块↔feature 块、开场组→首个 feature | **40/20**(`--block-gap`) | 相邻分组界,组内两倍 |
+
+**纯图页**没有 feature 块 / group,顶部一切 section 都走 `workDetailContainerCls` 的 **1×**,故严格横纵等距:**>900px 20:20 / ≤900px 10:10**(nybs / cellphone-info / italian-cookbook / plagiarism)。
 
 ### 响应式行为
 
 - **>1310**:feature-header 横排(`justify-content: space-between`),title 左 / description 右
-- **≤1310**:feature-header 与 self-identity 都转纵排(title 上 / description 下 / gallery 再下),纵向 gap 维持三层分级
-- **≤900**:section-2img 内双图转纵排(组内 10px),`--work-section-gap` 从 20 降到 10(与堆叠断点对齐)——纯图页横纵等距:**>900px 20:20 / ≤900px 10:10**
+- **≤1310**:feature-header 与 self-identity 转纵排(title 上 / description 下 / gallery 再下)
+- **≤900**:section-2img 内双图转纵排;`--work-section-gap` 20→10,`--block-gap`(`calc *2`)自动→20;所有档位同比,倍数不变。**`--block-gap` 无需单独写移动端。**
 
 ### 写新 MDX 时的模板
 
@@ -288,6 +303,7 @@ import {
   section2imgCls,
   section2imgItemCls,
   featureUnitCls,
+  featureBlockGroupCls,
   featureHeaderCls,
   featureCls,
   featuretitleCls,
@@ -298,6 +314,7 @@ import {
 
 export const meta = { title: '…', subtitle: '…', description: '…', tags: ['…'] };
 
+<div className={featureBlockGroupCls}>
 <div className={featureUnitCls}>
   <div className={featureHeaderCls}>
     <div className={featureCls}>
@@ -318,9 +335,12 @@ export const meta = { title: '…', subtitle: '…', description: '…', tags: [
     </div>
   </div>
 </div>
+</div>
 ```
 
-无 title 的纯图段就直接用 `<div className={sectionImgCls}>…</div>` 或 `<div className={section2imgCls}>…</div>` 不包裹 feature-unit,作为独立 unit 出现,与其它 unit 间靠 `workDetailContainerCls` 的 `--work-section-gap`(20px / ≤900 10px)区分。**`section2imgCls` 单个子项 = 单1小图**(左半槽、右留白,如 italian-cookbook Back Cover)。
+> 模板里 `featureBlockGroupCls` 包住**封面/hero 与全部连续的 feature 块**(整段"feature run",内部 gap 为 2×)。run 内 `封面→feature`、`feature↔feature` 都走同一个原子 `--block-gap`(2×);标题框架在外层容器(1×),所以 `标题→封面` 仍是 1×。纯图段 / iframe 放在 run 外面,与外侧保持 1×。
+
+无 title 的纯图段就直接用 `<div className={sectionImgCls}>…</div>` 或 `<div className={section2imgCls}>…</div>` 不包裹 feature-unit,作为独立 section 出现,与其它 section 间靠 `workDetailContainerCls` 的 `--work-section-gap`(20px / ≤900 10px)区分。**`section2imgCls` 单个子项 = 单1小图**(左半槽、右留白,如 italian-cookbook Back Cover)。
 
 ```powershell
 cd app
@@ -421,7 +441,7 @@ pnpm lint        # ESLint 检查
 7. **`object-fit` + `width:100%` + `height:auto` 不要混用**:`object-fit: contain` 在 width 已撑满、height 已 auto 的情况下无意义,反而误导渲染。只有"容器尺寸固定,图片需裁剪填满"时才用 `object-fit`,否则让图自然按比例撑更稳。
 8. **同组高度一致**:flex 容器 `align-items` 默认 stretch 时,并列子项会被拉到等高——这正是我们要的。`section2imgCls` 用 `items-stretch`:`2 张图`(同为 16:9)天然等高。**单图分两种,别混用**:`单1大图`(全宽,如 NYBS Home Page / Plagiarism poster / italian-cookbook Cover)用 `sectionImgCls`;`单1小图`(在 2 列容器里只填左半槽,右侧留白,如 italian-cookbook Back Cover)复用 `section2imgCls` 只放一个 `section2imgItemCls` 子项即可,不必塞空 div。**图+文字**:右半槽也用 `section2imgItemCls` 包 text(div 用 layout 槽位、内层 `<p>` 用 `descriptionTextCls` 管 typography),左右槽几何完全对称(如 plagiarism 01_All + 描述段)。
 9. **单变量 padding 必须笼罩全站所有页面**(踩过的坑):早期 `about.css` hardcode 了 `padding: 0 50/40/30/20` + 4 个 media query override,与全局 `--side-padding` 系统并存且漏 ≤390 段对齐。Phase 4b 后所有页面横向 padding 走 `px-[var(--side-padding)]` utility,新增任何页或容器,**不复制 hardcode 副本**,直接走 `--side-padding`,否则不同页对齐会跨断点漂移。
-10. **`feature-unit` 是视觉单元的最小包裹**(架构原则):每个有标题的图文段必须包进 `featureUnitCls`,header 与 gallery 之间用 unit gap `calc(--work-section-gap/2)`(10px 桌面 / 5px ≤900)表达"同 unit 归属感",unit 与 unit 之间用 container gap `--work-section-gap`(20px / 10px)表达"独立分界"。无 title 的纯图段直接作独立 unit,不包 unit 包父。纯图页横纵等距(组内 gap 与组间 section-gap 同值):**>900px 20:20 / ≤900px 10:10**。同一 `featureGalleryCls` 内有多个图组时(如 SONDER 的 2img + 全宽图),组间也用完整 `--work-section-gap`,与组内图片间隔一致。详见上文「三层亲密性梯度」。
+10. **feature 块节奏:块内1×,块间2×**(核心规则):每个「小标题+描述+图组」包进 `featureUnitCls`(内部 header↔gallery、图↔图统一 `--work-section-gap` 1×,20/10);封面/hero 与全部 feature 一起包进 `featureBlockGroupCls`(整段 feature run,内部 `gap --block-gap` 2×),所以 run 内 `封面→首个 feature`、`feature↔feature` 全走同一个原子 2×,不再用 mt/pt 拼接。外层容器 `workDetailContainerCls` 是 1×(纯图页全走它)。其余过渡(标题→封面、纯图 section↔section)保持 1×(20/10);纯图页(nybs / cellphone-info / italian-cookbook / plagiarism)因此仍是横纵等距 **>900 20:20 / ≤900 10:10**。详见上文「间距与设计原则」。
 11. **CSS 不要保留"迟早要用"的占位代码**:Phase 4 保留 `.enlarge-btn` 占位 18 行,Phase 4 收尾审计直接删掉。Phase 5 真做灯箱时按当时语义新建 markup + CSS,不期待"占位"还合用——避免 stale placeholder 误导后续维护。
 
 ---

@@ -16,10 +16,21 @@ export const section2imgCls =
 export const section2imgItemCls =
   'block w-[calc(50%-10px)] h-auto max-desktop:w-full';
 
-/* Section grouping: feature-unit + feature-header + feature / title-element */
-
+/* Section grouping: feature-unit + feature-header + feature / title-element
+   featureUnitCls     → one feature block: header(row) + gallery, internal
+                        header↔gallery and image↔image are BOTH the full
+                        --work-section-gap, so a block reads as a uniform 20/10. */
 export const featureUnitCls =
-  'flex flex-col gap-4 max-w-[1720px] w-full';
+  'flex flex-col gap-[var(--work-section-gap)] max-w-[1720px] w-full';
+
+/* featureBlockGroupCls → a "feature run": one 2× rhythm for the whole block
+   of a work page (cover/hero + every feature). Its owning container
+   (workDetailContainerCls) is 1×, so the title→cover edge stays glued at 1×
+   while every boundary inside the run — cover→feature, feature↔feature — is a
+   single atomic --block-gap (2×). A feature's internal pieces are still 1× via
+   featureUnitCls. Pure-image pages never use this. */
+export const featureBlockGroupCls =
+  'flex flex-col gap-[var(--block-gap)]';
 
 export const featureHeaderCls =
   'flex flex-wrap justify-between gap-2 w-full max-wide:flex-col max-wide:items-start';

@@ -51,6 +51,7 @@ import {
   section2imgCls,
   section2imgItemCls,
   featureUnitCls,
+  featureBlockGroupCls,
   featureHeaderCls,
   featureCls,
   featuretitleCls,
@@ -71,7 +72,8 @@ export const meta = {
   <WorkImgContainer src="/img/New Project/Cover.png" alt="Cover image" />
 </div>
 
-<!-- 一个 feature 段:带标题 + 描述 + 双图 -->
+<!-- 连续 feature 段:多个 featureUnit 都放进同一个 featureBlockGroupCls,块间自动 ×2(40/20) -->
+<div className={featureBlockGroupCls}>
 <div className={featureUnitCls}>
   <div className={featureHeaderCls}>
     <div className={featureCls}>
@@ -92,8 +94,9 @@ export const meta = {
     </div>
   </div>
 </div>
+</div>
 
-<!-- 一个纯图段:无标题,直接作独立 unit -->
+<!-- 一个纯图段(无标题),独立 section:放 featureBlockGroupCls 外面,靠外层容器 1× 与 run 相隔 -->
 <div className={sectionImgCls}>
   <WorkImgContainer src="/img/New Project/Final.png" alt="Final outcome" />
 </div>
@@ -213,8 +216,8 @@ GitHub Actions 会跑 lint → test → build → deploy 到 `gh-pages`。1–2 
 
 ## 参考文件
 
-- **`src/styles/markup.js`** — 21 个 class 常量,所有 9 个作品都从这取;新增 work 不需要往里面加常量,直接复用现有
+- **`src/styles/markup.js`** — 23 个 class 常量,所有 9 个作品都从这取;新增 work 不需要往里面加常量,直接复用现有
 - **`src/components/WorkImgContainer.jsx`** — 万能图容器,自动处理 webp source / 注册灯箱 / 焦点环 / key.onKeyDown
 - **`src/components/Modal.jsx`** — 灯箱系统:5b 加的 pan-zoom / hover-follow 全在这里,新 work 不需要碰
-- **`README.md` § 三层亲密性梯度** — unit / header / gallery 三层嵌套的设计准则,决定 `<div className={featureUnitCls}>` 何时使用
+- **`README.md` § 间距与设计原则** — 「组内 1× / 组间 2×」两档间距准则,决定 `featureUnitCls` / `featureBlockGroupCls` 何时使用
 - **`nybs.mdx` / `wilderness-rescue.mdx`** — 两份完整模板,任何新 work 直接参考它们的结构

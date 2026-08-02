@@ -31,6 +31,8 @@
   --side-padding: 50px;
   --gap-after-nav: clamp(16px, calc(16px + 24 * (1310px - 100vw) / 810), 40px);
   --work-section-gap: 20px;
+  /* 块间间距:feature 块之间 / 封面→首个 feature 的边界倍数,tied to --work-section-gap */
+  --block-gap: calc(var(--work-section-gap) * 2);
   --card-ratio: 390 / 250;
 
   /* ---- Custom breakpoints (Tailwind breakpoints are min-width;
