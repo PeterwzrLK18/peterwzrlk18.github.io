@@ -13,16 +13,13 @@ import {
   featureGalleryCls,
 } from '../styles/markup';
 
-export const meta = {
-  title: 'Wilderness Rescue',
-  subtitle: 'Low-altitude emergency response, Service Design',
-  description: 'An integrated service design utilizing UAV technology to bridge the critical gap in wilderness medical intervention.',
-  tags: ['Service Design', 'UAV', 'Hardware'],
-};
+import { workMetadata } from '../data/work-metadata';
+
+export const meta = workMetadata['wilderness-rescue'];
 
 <div className={featureBlockGroupCls}>
 <div className={sectionImgCls}>
-  <WorkImgContainer src="/img/Wilderness Rescue/Project Cover.webp" alt="Main Cover" />
+  <WorkImgContainer src="/img/Wilderness Rescue/Project Cover.webp" alt="Main Cover" priority />
 </div>
 
 <div className={featureUnitCls}>

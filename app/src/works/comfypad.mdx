@@ -15,16 +15,13 @@ import {
   iframePosterCls,
 } from '../styles/markup';
 
-export const meta = {
-  title: 'ComfyPad',
-  subtitle: 'Hardware Prototyping & Interaction',
-  description: 'Smart Hardware: Pneumatic Control System & Modular Prototype for Medical Care.',
-  tags: ['Hardware', 'Medical', 'Prototyping'],
-};
+import { workMetadata } from '../data/work-metadata';
+
+export const meta = workMetadata['comfypad'];
 
 <div className={featureBlockGroupCls}>
 <div className={sectionImgCls}>
-  <WorkImgContainer src="/img/ComfyPad/Main Cover.webp" alt="Main Cover" />
+  <WorkImgContainer src="/img/ComfyPad/Main Cover.webp" alt="Main Cover" priority />
 </div>
 
 <div className={featureUnitCls}>

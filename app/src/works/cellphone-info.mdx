@@ -5,15 +5,12 @@ import {
   section2imgItemCls,
 } from '../styles/markup';
 
-export const meta = {
-  title: 'Cellphone info',
-  subtitle: 'Infograpic Design',
-  description: 'Conduct an experiment involving several visualized charts based on event records from the past week.',
-  tags: ['Infographic', 'Data Visualization'],
-};
+import { workMetadata } from '../data/work-metadata';
+
+export const meta = workMetadata['cellphone-info'];
 
 <div className={sectionImgCls}>
-  <WorkImgContainer src="/img/Cellphone info/Main work.webp" alt="Main Chart" />
+  <WorkImgContainer src="/img/Cellphone info/Main work.webp" alt="Main Chart" priority />
 </div>
 
 <div className={section2imgCls}>

@@ -6,19 +6,16 @@ import {
   descriptionTextCls,
 } from '../styles/markup';
 
-export const meta = {
-  title: 'Plagiarism',
-  subtitle: 'Packaging, Album Design',
-  description: 'Cover design and promotional materials for the band\u2019s album. *The original album is "盗作(Plagiarism)" by Yorushika.',
-  tags: ['Packaging', 'Album Design'],
-};
+import { workMetadata } from '../data/work-metadata';
+
+export const meta = workMetadata['plagiarism'];
 
 <div className={section2imgCls}>
   <div className={section2imgItemCls}>
-    <WorkImgContainer src="/img/Plagiarism/01_Cover.webp" alt="Cover Design" />
+    <WorkImgContainer src="/img/Plagiarism/01_Cover.webp" alt="Cover Design" priority />
   </div>
   <div className={section2imgItemCls}>
-    <WorkImgContainer src="/img/Plagiarism/01_Back.webp" alt="Back Cover Design" />
+    <WorkImgContainer src="/img/Plagiarism/01_Back.webp" alt="Back Cover Design" priority />
   </div>
 </div>
 

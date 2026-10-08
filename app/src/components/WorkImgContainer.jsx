@@ -14,7 +14,7 @@ function isVideoSrc(src) {
   return /\.(webm|mp4)(\?|$)/i.test(src);
 }
 
-function WorkImgContainer({ src, alt, className = '' }) {
+function WorkImgContainer({ src, alt, className = '', priority = false }) {
   const gallery = useLightboxGallery();
   const { register, unregister } = gallery;
   const indexRef = useRef(-1);
@@ -75,7 +75,8 @@ function WorkImgContainer({ src, alt, className = '' }) {
           className={mediaBase}
           src={src}
           alt={alt}
-          loading="lazy"
+          loading={priority ? 'eager' : 'lazy'}
+          fetchPriority={priority ? 'high' : 'auto'}
           decoding="async"
         />
       </picture>

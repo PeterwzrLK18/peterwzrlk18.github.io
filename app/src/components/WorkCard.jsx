@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-function WorkCard({ work }) {
+function WorkCard({ work, eager = false, priority = false }) {
   if (!work.slug) return null;
 
   return (
@@ -18,7 +18,8 @@ function WorkCard({ work }) {
               className="w-full h-full object-cover"
               src={work.img}
               alt={work.alt}
-              loading="lazy"
+              loading={eager ? 'eager' : 'lazy'}
+              fetchPriority={priority ? 'high' : 'auto'}
               decoding="async"
             />
           </picture>

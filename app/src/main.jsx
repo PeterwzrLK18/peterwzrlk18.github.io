@@ -22,6 +22,9 @@ import App from './App.jsx'
   }
 })();
 
+// Static tags serve non-JS crawlers; React owns them after startup and navigation.
+document.head.querySelectorAll('[data-page-meta]').forEach(element => element.remove());
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter useTransitions={false}>

@@ -34,7 +34,14 @@ describe('work detail and image gallery', () => {
   it.each(worksIndex)('renders $slug without an update loop in StrictMode', ({ slug }) => {
     renderWork(slug);
     expect(screen.queryByText('404')).not.toBeInTheDocument();
-    expect(screen.getAllByRole('button', { name: /^Enlarge image:/ }).length).toBeGreaterThan(0);
+    const triggers = screen.getAllByRole('button', { name: /^Enlarge image:/ });
+    expect(triggers.length).toBeGreaterThan(0);
+    const firstGroupCount = slug === 'plagiarism' ? 2 : 1;
+    const images = triggers.map(trigger => within(trigger).getByRole('img'));
+    images.forEach((image, index) => {
+      expect(image).toHaveAttribute('loading', index < firstGroupCount ? 'eager' : 'lazy');
+      expect(image).toHaveAttribute('fetchpriority', index < firstGroupCount ? 'high' : 'auto');
+    });
   });
 
   it('opens the selected image, navigates in order, and restores focus on close', () => {

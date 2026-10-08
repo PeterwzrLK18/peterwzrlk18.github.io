@@ -9,32 +9,31 @@ import { absoluteUrl } from '../lib/url';
 
 const OG_FALLBACK_IMG = '/img/home/comfypad-img.webp';
 const OG_FALLBACK_ALT = 'Likai Wang — Portfolio';
-const OG_IMG_W = '780';
-const OG_IMG_H = '500';
-
-function Seo({ title, description, image, type = 'website' }) {
+function Seo({ title, description, image, imageAlt = OG_FALLBACK_ALT, imageWidth, imageHeight, path, type = 'website' }) {
   const imgUrl = absoluteUrl(image || OG_FALLBACK_IMG);
-  const url = absoluteUrl(typeof window !== 'undefined' ? window.location.pathname : '/');
+  const pathname = path || (typeof window !== 'undefined' ? window.location.pathname : '/');
+  const url = absoluteUrl(pathname.replace(/\/$/, '') || '/');
 
   return (
     <>
       <title>{title}</title>
+      <link rel="canonical" href={url} />
       <meta name="description" content={description} />
       <meta property="og:title" content={title} />
       {description && <meta property="og:description" content={description} />}
       <meta property="og:type" content={type} />
       <meta property="og:url" content={url} />
       <meta property="og:image" content={imgUrl} />
-      <meta property="og:image:alt" content={OG_FALLBACK_ALT} />
-      <meta property="og:image:width" content={OG_IMG_W} />
-      <meta property="og:image:height" content={OG_IMG_H} />
+      <meta property="og:image:alt" content={imageAlt} />
+      {imageWidth && <meta property="og:image:width" content={String(imageWidth)} />}
+      {imageHeight && <meta property="og:image:height" content={String(imageHeight)} />}
       <meta property="og:site_name" content="Likai Wang — Portfolio" />
 
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       {description && <meta name="twitter:description" content={description} />}
       <meta name="twitter:image" content={imgUrl} />
-      <meta name="twitter:image:alt" content={OG_FALLBACK_ALT} />
+      <meta name="twitter:image:alt" content={imageAlt} />
     </>
   );
 }

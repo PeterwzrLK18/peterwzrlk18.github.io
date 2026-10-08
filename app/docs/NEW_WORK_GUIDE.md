@@ -17,19 +17,18 @@ PNG 放在 `assets/png-backups/New Project/`，封面放在 `assets/png-backups/
 ```mdx
 import WorkImgContainer from '../components/WorkImgContainer';
 import { sectionImgCls } from '../styles/markup';
+import { workMetadata } from '../data/work-metadata.js';
 
-export const meta = {
-  title: 'My New Project',
-  subtitle: 'Product Design',
-  description: '一句话介绍作品。',
-};
+export const meta = workMetadata['my-new-project'];
 
 <div className={sectionImgCls}>
-  <WorkImgContainer src="/img/New Project/Cover.webp" alt="作品封面" />
+  <WorkImgContainer src="/img/New Project/Cover.webp" alt="作品封面" priority />
 </div>
 ```
 
-title 必填；subtitle、description 选填。tags 可保存内容分类，但目前不展示，也未接入 schema。MDX 使用 JSX 语法：`className`、`<br />`、`allowFullScreen`；注释使用 `{/* 注释 */}`，不要使用 HTML 注释。
+在 `app/src/data/work-metadata.js` 添加同 slug 的对象，包含 `title`、`subtitle`、`description`。title 必填；subtitle、description 选填，但分享预览建议填写 description。tags 可保存内容分类，目前不展示，也未接入 schema。详情页与静态分享入口共用这份数据。
+
+MDX 使用 JSX 语法：`className`、`<br />`、`allowFullScreen`；注释使用 `{/* 注释 */}`，不要使用 HTML 注释。
 
 纯图布局参考 `italian-cookbook.mdx`；带段落布局参考 `wilderness-rescue.mdx`；三图布局参考 `nybs.mdx`。封面与连续 feature 段应一起放进 featureBlockGroupCls，维持块内 1 倍、块间 2 倍间距。
 
@@ -48,7 +47,7 @@ import { section2imgCls, section2imgItemCls } from '../styles/markup';
 </div>
 ```
 
-把所需 import 放在文件顶部，只导入实际使用的常量。图片组件负责灯箱注册与键盘打开，无需自己再写点击处理。
+把所需 import 放在文件顶部，只导入实际使用的常量。首组封面静态图添加 `priority`，立即加载并提高请求优先级；后续图片默认 lazy，不要全部标记 priority。图片组件负责灯箱注册与键盘打开，无需自己再写点击处理。
 
 ## 3. 首页索引与站点地图
 
@@ -58,7 +57,7 @@ import { section2imgCls, section2imgItemCls } from '../styles/markup';
 { slug: 'my-new-project', title: 'My New Project', img: '/img/home/my-new-project-img.webp', alt: '作品封面' },
 ```
 
-确认封面文件真实存在。在 `app/public/sitemap.xml` 的 `</urlset>` 前加入：
+确认封面文件真实存在。当前首页封面统一为 780 × 500，分享图复用首页封面；构建会核对尺寸。如果引入不同尺寸，需要同步调整 `page-metadata.js` 中该作品的分享尺寸声明，不涉及详情图片自动预留空间。在 `app/public/sitemap.xml` 的 `</urlset>` 前加入：
 
 ```xml
 <url><loc>https://peterwzrlk18.github.io/work/my-new-project</loc><priority>0.7</priority><changefreq>yearly</changefreq></url>
@@ -103,9 +102,10 @@ import { iframeContainerCls, iframePosterCls } from '../styles/markup';
 pnpm.cmd lint
 pnpm.cmd test
 pnpm.cmd build
+pnpm.cmd test:site
 ```
 
-也可双击根目录 preview.bat 进行交互检查：
+首次浏览器检查前运行 `pnpm.cmd exec playwright install chromium`。也可双击根目录 preview.bat 进行交互检查：
 
 - 首页卡片、详情标题、封面和正文正确，图片没有缺失。
 - 桌面与手机宽度下左右对齐，双图切换为纵排，没有横向溢出。
@@ -120,6 +120,8 @@ pnpm.cmd build
 
 先在 GitHub Desktop 或 Git diff 中确认代码、网站 WebP、PNG 备份和 sitemap 都包含在预期修改中，再提交、推送。
 
-推送 main 只触发 lint、test 和 build。发布需要在 GitHub Actions 手动运行 Build & Deploy to GitHub Pages，或推送 v* 标签；检查通过后才部署到 gh-pages。不要使用重建 Git 索引或强推来“刷新缓存”。
+推送 main 触发 lint、单元测试、build 和生产预览浏览器检查。发布需要在 GitHub Actions 手动运行 Build & Deploy to GitHub Pages，或推送 v* 标签；检查通过后将同一份已测试构建部署到 gh-pages。不要使用重建 Git 索引或强推来“刷新缓存”。
 
-发布后检查首页、作品深链接直接刷新、图片和灯箱、sitemap。若显示旧版本，先确认 deploy job 成功，再尝试浏览器强制刷新。
+发布后自动等待线上 `build-info.json` 的提交号和构建指纹匹配本次产物，再检查页面、素材、字体、灯箱及分享信息；最多等待 5 分钟，超时或检查失败会使工作流失败。检查报告可在该次 Actions 的 Artifacts 中下载：`preview-test-report` 和 `online-test-report`。自动检查不自动回滚，失败时先查看报告和正式站。
+
+分享平台可能缓存旧预览，更新后需在目标平台重新抓取链接；独立静态分享标签不等同于完整页面预渲染。真实手机交互和 sitemap 仍应人工核对。

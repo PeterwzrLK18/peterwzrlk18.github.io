@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import Seo from '../components/Seo';
 import LightboxGallery from '../components/LightboxGallery';
 import NotFoundPage from './NotFoundPage';
-import { worksIndex } from '../data/works-index';
+import { getPageMetadata } from '../data/page-metadata';
 import {
   workDetailContainerCls,
   selfIdentityCls,
@@ -23,19 +23,10 @@ function WorkDetailPage() {
 
   const Work = mod.default;
   const meta = mod.meta || {};
-  // Match the current work from the index by slug. If it's missing (or has no
-  // cover image) we pass undefined and Seo falls back to its OG_FALLBACK_IMG
-  // (/img/home/comfypad-img.webp), so share cards never break.
-  const currentWork = worksIndex.find((w) => w.slug === slug);
 
   return (
     <>
-      <Seo
-        title={`${meta.title || slug} - Likai Wang`}
-        description={meta.description}
-        image={currentWork?.img}
-        type="article"
-      />
+      <Seo {...getPageMetadata(`/work/${slug}`)} />
       <div className={workDetailContainerCls}>
         <div className={selfIdentityCls}>
           <div className={titleBlockCls}>

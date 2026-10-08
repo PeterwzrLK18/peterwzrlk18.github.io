@@ -1,4 +1,5 @@
 import Seo from '../components/Seo';
+import { getPageMetadata } from '../data/page-metadata';
 
 const paragraphClass =
   'relative max-w-[760px] font-mono font-normal text-[var(--color-text-brand-default)] text-base tracking-normal leading-[120%] max-tablet:text-[var(--fs-body)] max-tablet:leading-[var(--lh-normal)] max-tablet:break-words';
@@ -6,11 +7,7 @@ const paragraphClass =
 function AboutPage() {
   return (
     <>
-      <Seo
-        title="About - Likai Wang"
-        description="Shenzhen-based designer focused on the intersection of Intelligent Systems and Hardware Interaction, transitioning from visual and motion design to functional, hardware-led products."
-        image="/img/about/Kowsky Plaza_Glass img.webp"
-      />
+      <Seo {...getPageMetadata('/about')} />
       <section className="flex flex-wrap justify-start gap-10 mx-auto w-full max-w-[1720px] px-[var(--side-padding)]">
         <article className="flex flex-col w-[390px] items-start relative overflow-auto gap-5">
           <div className="flex items-end relative self-stretch w-full flex-none bg-[var(--color-background-neutral-default)]">

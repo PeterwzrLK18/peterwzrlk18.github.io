@@ -8,15 +8,12 @@ import {
   rightSectorItemCls,
 } from '../styles/markup';
 
-export const meta = {
-  title: 'NYBS',
-  subtitle: 'Campaigns, Web design',
-  description: 'Design of online website visuals and related brand activity materials.',
-  tags: ['Campaigns', 'Web design'],
-};
+import { workMetadata } from '../data/work-metadata';
+
+export const meta = workMetadata['nybs'];
 
 <div className={sectionImgCls}>
-  <WorkImgContainer src="/img/NYBS/Home Page.webp" alt="Home Page" />
+  <WorkImgContainer src="/img/NYBS/Home Page.webp" alt="Home Page" priority />
 </div>
 
 <div className={section3imgCls}>

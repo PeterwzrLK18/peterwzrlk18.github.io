@@ -13,7 +13,9 @@
 
 ## 字体与文字层级
 
-`font-heading` 指定 Inter、Helvetica、sans-serif；仓库未提供 Inter 字体文件或加载声明，因此不能保证每台设备显示 Inter。`font-mono` 使用仓库内的 Roboto Mono 可变字体，普通与斜体均设置 `font-display: swap`。
+`font-heading` 使用随站提供的 Inter 可变字体（普通体，100–900 字重），后备为 Helvetica、sans-serif。文件位于 `public/fonts/InterVariable.woff2`，约 352 KB，入口预加载并使用 `font-display: swap`。来自 [Inter 官方仓库](https://github.com/rsms/inter)，OFL 许可证保存在同目录的 `Inter-LICENSE.txt`。中文等未包含字符仍使用系统后备字体。
+
+`font-mono` 继续使用仓库内的 Roboto Mono 可变字体，普通与斜体均设置 `font-display: swap`。本次字体统一保留字号、颜色、间距和灯箱视觉规则；实际字体变化可能改变文字宽度与换行。
 
 | 内容 | 常量 | 字族 / 字重 | 桌面字号范围 | 颜色 |
 |---|---|---|---|---|

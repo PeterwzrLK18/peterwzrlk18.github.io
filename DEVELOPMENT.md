@@ -54,6 +54,15 @@ lint 检查 React 代码和 Node 素材脚本；test 检查页面、图片集合
 
 构建后可用 `pnpm.cmd preview --host 127.0.0.1` 检查生产结果，打开终端显示的地址。这些本地命令不会发布网站，正式发布流程见 [项目说明](app/README.md)。
 
+完整浏览器检查需首次安装测试浏览器，然后在构建后运行：
+
+```powershell
+pnpm.cmd exec playwright install chromium
+pnpm.cmd test:site
+```
+
+检查会自行启动生产预览，覆盖发布版本、全部部署素材、11 个页面的静态分享信息、字体、图片、作品灯箱及手机宽度导航。报告位于 `app/playwright-report/index.html`。开发服务器用于编辑；生产预览用于核对构建生成的分享入口，两者用途不同。
+
 ## 素材工具
 
 PNG 备份位于 `assets/png-backups/`，网站素材位于 `app/public/img/`，操作见 [备份说明](assets/png-backups/README.md)。sharp 随项目安装，转换会覆盖对应 WebP 输出，但不改 PNG 备份；普通开发无需重复转换。

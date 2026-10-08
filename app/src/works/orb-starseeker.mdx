@@ -13,16 +13,13 @@ import {
   featureGalleryCls,
 } from '../styles/markup';
 
-export const meta = {
-  title: 'Orb: Starseeker',
-  subtitle: 'Smart Hardware Architecture, Service Design',
-  description: 'A portable intelligent stargazing system designed to lower the technical barrier for urban dwellers to reconnect with the cosmos.',
-  tags: ['Hardware', 'Service Design', 'Stargazing'],
-};
+import { workMetadata } from '../data/work-metadata';
+
+export const meta = workMetadata['orb-starseeker'];
 
 <div className={featureBlockGroupCls}>
 <div className={sectionImgCls}>
-  <WorkImgContainer src="/img/Starseeker/Orb-Starseeker Concept.webp" alt="Main Cover" />
+  <WorkImgContainer src="/img/Starseeker/Orb-Starseeker Concept.webp" alt="Main Cover" priority />
 </div>
 
 <div className={featureUnitCls}>

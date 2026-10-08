@@ -15,16 +15,13 @@ import {
   iframePosterCls,
 } from '../styles/markup';
 
-export const meta = {
-  title: 'Form of Vertebra',
-  subtitle: 'Physical Computing & Simulation Prototyping',
-  description: 'Physical Simulation Prototype Based on 3-Axis Servo Control and Non-linear Center-of-Gravity (CoG) Algorithms',
-  tags: ['Physical Computing', 'Prototyping', 'Biomimetic'],
-};
+import { workMetadata } from '../data/work-metadata';
+
+export const meta = workMetadata['form-of-vertebra'];
 
 <div className={featureBlockGroupCls}>
 <div className={sectionImgCls}>
-  <WorkImgContainer src="/img/Form of Vertebra/Desktop Kinetic Sculpture.webp" alt="Main Cover" />
+  <WorkImgContainer src="/img/Form of Vertebra/Desktop Kinetic Sculpture.webp" alt="Main Cover" priority />
 </div>
 
 <div className={featureUnitCls}>

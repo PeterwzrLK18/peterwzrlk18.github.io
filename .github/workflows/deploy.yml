@@ -11,12 +11,16 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: portfolio-pages
+  cancel-in-progress: false
+
 jobs:
   # 1) CI: 质量门禁
   #    触发条件:任何 push 到 main、任何 v* tag、手动 dispatch
   #    作用:lint + test + build;通过后 deploy job 才会真正改 gh-pages
   ci:
-    name: Lint + Test + Build
+    name: Lint + Test + Build + Browser Check
     runs-on: ubuntu-latest
 
     steps:
@@ -53,6 +57,32 @@ jobs:
         run: pnpm build
         working-directory: ./app
 
+      - name: Install test browser
+        run: pnpm exec playwright install --with-deps chromium
+        working-directory: ./app
+
+      - name: Check production preview
+        run: pnpm test:site
+        working-directory: ./app
+
+      - name: Save tested build
+        uses: actions/upload-artifact@v4
+        with:
+          name: tested-site
+          path: app/dist
+          retention-days: 7
+
+      - name: Save preview test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-test-report
+          path: |
+            app/playwright-report
+            app/test-results
+          if-no-files-found: ignore
+          retention-days: 7
+
   # 2) Deploy: 把 dist 推到 gh-pages 分支
   #    只在(v* tag 被 push)或(workflow_dispatch 手动触发)时跑
   #    依赖 ci job 通过——避免上线坏构建
@@ -84,9 +114,11 @@ jobs:
         run: pnpm install --frozen-lockfile
         working-directory: ./app
 
-      - name: Build app
-        run: pnpm build
-        working-directory: ./app
+      - name: Download tested build
+        uses: actions/download-artifact@v4
+        with:
+          name: tested-site
+          path: app/dist
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
@@ -97,3 +129,30 @@ jobs:
           keep_files: false
           # tag 名字写入 commit message,gh-pages 历史一目了然
           commit_message: 'deploy: ${{ github.ref_name }}'
+
+      - name: Wait for this release online
+        run: node scripts/wait-for-release.mjs
+        working-directory: ./app
+        env:
+          SITE_URL: https://peterwzrlk18.github.io
+
+      - name: Install test browser
+        run: pnpm exec playwright install --with-deps chromium
+        working-directory: ./app
+
+      - name: Check published website
+        run: pnpm test:site
+        working-directory: ./app
+        env:
+          SITE_URL: https://peterwzrlk18.github.io
+
+      - name: Save online test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: online-test-report
+          path: |
+            app/playwright-report
+            app/test-results
+          if-no-files-found: ignore
+          retention-days: 7

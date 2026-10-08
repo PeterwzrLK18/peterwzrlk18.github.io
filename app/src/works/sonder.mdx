@@ -13,17 +13,14 @@ import {
   featureGalleryCls,
 } from '../styles/markup';
 
-export const meta = {
-  title: 'SONDER',
-  subtitle: 'Magazine, Editorial Design',
-  description: 'A guide from different cultural backgrounds, depicting the urban culture of New York from multiple perspectives. Seeking symbiotic wisdom in cultural collisions.',
-  tags: ['Magazine', 'Editorial', 'Cultural'],
-};
+import { workMetadata } from '../data/work-metadata';
+
+export const meta = workMetadata['sonder'];
 
 <div className={featureBlockGroupCls}>
 <div className={section2imgCls}>
   <div className={section2imgItemCls}>
-    <WorkImgContainer src="/img/SONDER/Cover A.webp" alt="Cover Design" />
+    <WorkImgContainer src="/img/SONDER/Cover A.webp" alt="Cover Design" priority />
   </div>
   <div className={section2imgItemCls}>
     <WorkImgContainer src="/img/SONDER/Hand Held Magazine Cover.webm" alt="Cover Design" />

@@ -5,15 +5,12 @@ import {
   section2imgItemCls,
 } from '../styles/markup';
 
-export const meta = {
-  title: 'Italian cookbook',
-  subtitle: 'Cookbook, Book Design',
-  description: 'Book design for the Essentials of classic Italian coooking.',
-  tags: ['Book Design', 'Editorial'],
-};
+import { workMetadata } from '../data/work-metadata';
+
+export const meta = workMetadata['italian-cookbook'];
 
 <div className={sectionImgCls}>
-  <WorkImgContainer src="/img/Italian cookbook/Cover.webp" alt="Cover" />
+  <WorkImgContainer src="/img/Italian cookbook/Cover.webp" alt="Cover" priority />
 </div>
 
 <div className={section2imgCls}>
