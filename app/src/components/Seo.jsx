@@ -2,12 +2,12 @@
 // 会自动 hoist 到 <head>,无需第三方库。
 // 每个 Page 顶部放一个 <Seo ... /> 即可设置该路由的元信息。
 //
-// Phase D2 修正:
+// 分享图片使用绝对地址，并提供图片元信息。
 // - og:image / twitter:image 强制 absolute URL(社交平台拒绝相对路径,会导致分享卡无图)
 // - 补 og:image:width / height / alt 帮助平台预渲染卡尺寸,避免下载图片探测
 import { absoluteUrl } from '../lib/url';
 
-const OG_FALLBACK_IMG = '/img/home/comfypad-img.png';
+const OG_FALLBACK_IMG = '/img/home/comfypad-img.webp';
 const OG_FALLBACK_ALT = 'Likai Wang — Portfolio';
 const OG_IMG_W = '780';
 const OG_IMG_H = '500';

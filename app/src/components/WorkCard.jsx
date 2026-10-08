@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 function WorkCard({ work }) {
   if (!work.slug) return null;
 
-  const webpSrc = work.img.replace(/\.png$/i, '.webp');
-
   return (
     <Link
       to={`/work/${work.slug}`}
@@ -16,7 +14,6 @@ function WorkCard({ work }) {
         </h2>
         <div className="flex justify-center items-center h-full relative">
           <picture>
-            <source srcSet={webpSrc} type="image/webp" />
             <img
               className="w-full h-full object-cover"
               src={work.img}

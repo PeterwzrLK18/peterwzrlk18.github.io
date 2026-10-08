@@ -1,35 +1,28 @@
 @echo off
-rem One-click live preview: free the port, start pnpm dev, then open Edge.
 setlocal
-
-set "APP=%~dp0app"
-set "EDGE=C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
-set "PORT=5173"
-
-cd /d "%APP%"
-
-rem 1) Kill any stale dev server on the port so we always get a fresh preview.
-for /f "tokens=5" %%p in ('netstat -ano ^| findstr :%PORT% ^| findstr LISTENING') do (
-    taskkill /PID %%p /F /T >nul 2>nul
-)
-
-rem 2) Run the dev server in its own window (hot reload; close it or Ctrl+C to stop).
-start "Dev Server (pnpm dev)" cmd /k pnpm dev
-
-rem 3) Wait until the server is up, then open the browser.
-echo Waiting for http://localhost:%PORT% ...
-:wait
-curl -s -o nul http://localhost:%PORT%
+cd /d "%~dp0app"
+if errorlevel 1 goto failed
+where node.exe >nul 2>nul
 if errorlevel 1 (
-    timeout /t 1 /nobreak >nul
-    goto wait
+    echo Node.js is missing. See DEVELOPMENT.md and reopen your terminal after setup.
+    goto failed
 )
-
-rem 4) Open the preview in Edge.
-start "" "%EDGE%" http://localhost:%PORT%
-
+where pnpm.cmd >nul 2>nul
+if errorlevel 1 (
+    echo pnpm is missing. See DEVELOPMENT.md and reopen your terminal after setup.
+    goto failed
+)
+if not exist node_modules\vite\bin\vite.js (
+    call pnpm.cmd install --frozen-lockfile
+    if errorlevel 1 goto failed
+)
+echo Starting http://localhost:5173
+echo Keep this window open. Press Ctrl+C to stop the preview.
+call pnpm.cmd dev --host 127.0.0.1 --port 5173 --strictPort --open
+if errorlevel 1 goto failed
+exit /b 0
+:failed
 echo.
-echo Preview ready in Edge: http://localhost:%PORT%
-echo The dev server runs in its own window. Keep it open for live reload;
-echo close that window (or Ctrl+C) to stop.
-endlocal
+echo Preview could not start. Check the message above.
+pause
+exit /b 1

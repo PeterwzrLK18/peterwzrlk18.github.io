@@ -1,14 +1,9 @@
 // Shared Tailwind utility class strings used by MDX work pages and WorkDetailPage.
-// Centralized in Phase 4b to replace the deleted global CSS files
-// (works.css / NYBS.css / shared.css / index.css / about.css / styleguide.css).
 
 /* Layout primitives for work detail image sections */
 
 export const sectionImgCls =
   'block max-w-[1720px] w-full';
-
-export const sectionImgItemCls =
-  'block w-full h-auto';
 
 export const section2imgCls =
   'flex flex-nowrap items-stretch justify-start gap-5 max-w-[1720px] w-full max-desktop:flex-col max-desktop:gap-2.5';
@@ -55,7 +50,7 @@ export const featuretitleCls =
    Never apply the same class to both the div and the <p>. */
 
 export const descriptionCls =
-  'max-w-[560px] flex-shrink-0 ml-auto max-wide:ml-0 max-wide:max-w-[560px] max-wide:w-full';
+  'max-w-[560px] flex-shrink-0 ml-auto max-wide:ml-0 max-wide:w-full';
 
 export const descriptionTextCls =
   'font-heading font-semibold text-[var(--color-brand-500)] text-[clamp(14px,0.6rem+0.9vw,24px)] tracking-normal leading-[120%] text-left [text-wrap:pretty] max-tablet:text-[var(--fs-h2)] max-tablet:leading-[var(--lh-normal)] max-tablet:break-words';
@@ -66,7 +61,7 @@ export const section3imgCls =
   'flex items-start justify-between gap-5 max-desktop:flex-col max-desktop:gap-2.5 max-desktop:w-full';
 
 export const leftSectorItemCls =
-  'w-[calc(50%-10px)] max-desktop:w-full max-desktop:gap-2.5';
+  'w-[calc(50%-10px)] max-desktop:w-full';
 
 export const rightSectorItemCls =
   'flex flex-col w-[calc(50%-10px)] gap-5 max-w-[800px] max-desktop:w-full max-desktop:gap-2.5';
@@ -83,7 +78,7 @@ export const titleBlockCls =
   'font-heading font-bold text-[var(--color-brand-900)] text-[clamp(28px,1.5rem+2vw,48px)] tracking-normal leading-[120%] max-w-[800px] max-tablet:text-[var(--fs-h1)] max-tablet:leading-[var(--lh-tight)] max-tablet:tracking-[-0.02em] max-tablet:font-extrabold';
 
 export const worksubtitleCls =
-  'font-mono font-normal text-[var(--color-brand-500)] text-[clamp(16px,0.8rem+0.6vw,20px)] tracking-normal leading-[120%] max-tablet:text-[12px] max-tablet:font-normal max-tablet:tracking-[0.02em] max-tablet:mt-1.5 max-tablet:mb-2.5';
+  'font-mono font-normal text-[var(--color-brand-500)] text-[clamp(16px,0.8rem+0.6vw,20px)] tracking-normal leading-[120%] max-tablet:text-[12px] max-tablet:tracking-[0.02em] max-tablet:mt-1.5 max-tablet:mb-2.5';
 
 /* Work-detail self-identity description (top framework):
    - workDescriptionWrapCls → wrapper <div>: layout only
@@ -96,7 +91,7 @@ export const workDescriptionWrapCls =
 export const workDescriptionTextCls =
   'font-heading font-semibold text-[var(--color-text-brand-default)] text-[clamp(14px,0.6rem+0.9vw,24px)] tracking-normal leading-[120%] text-left [text-wrap:pretty] max-tablet:text-[var(--fs-h2)] max-tablet:leading-[var(--lh-normal)] max-tablet:break-words';
 
-/* Inline workaround for the iframe at the bottom of comfypad/form-of-vertebra */
+/* Responsive 16:9 iframe layout */
 
 export const iframeContainerCls =
   'block relative w-full cursor-pointer focus-visible:outline-2 focus-visible:outline-[#4a90e2] focus-visible:outline-offset-2';

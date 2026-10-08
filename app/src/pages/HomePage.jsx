@@ -8,7 +8,7 @@ function HomePage() {
       <Seo
         title="Portfolio - Likai Wang"
         description="Likai Wang's portfolio showcasing his work and experience in design and development."
-        image="/img/home/comfypad-img.png"
+        image="/img/home/comfypad-img.webp"
       />
       <section
         id="works-list"

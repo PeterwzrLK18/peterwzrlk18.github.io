@@ -9,16 +9,15 @@ function AboutPage() {
       <Seo
         title="About - Likai Wang"
         description="Shenzhen-based designer focused on the intersection of Intelligent Systems and Hardware Interaction, transitioning from visual and motion design to functional, hardware-led products."
-        image="/img/about/Kowsky Plaza_Glass img.png"
+        image="/img/about/Kowsky Plaza_Glass img.webp"
       />
       <section className="flex flex-wrap justify-start gap-10 mx-auto w-full max-w-[1720px] px-[var(--side-padding)]">
         <article className="flex flex-col w-[390px] items-start relative overflow-auto gap-5">
           <div className="flex items-end relative self-stretch w-full flex-none bg-[var(--color-background-neutral-default)]">
             <picture>
-              <source srcSet="/img/about/Kowsky Plaza_Glass img.webp" type="image/webp" />
               <img
                 className="relative w-[100px] h-[140px]"
-                src="/img/about/Kowsky Plaza_Glass img.png"
+                src="/img/about/Kowsky Plaza_Glass img.webp"
                 alt="Kowsky Plaza Glass Image"
               />
             </picture>
@@ -33,7 +32,7 @@ function AboutPage() {
         </article>
 
         <article className="w-[760px] flex flex-col items-start gap-5 relative max-wide:w-full">
-          <div className={paragraphClass}>
+          <div className="relative w-full max-w-[760px]">
             <p className={paragraphClass}>
               Designer | Intelligent Systems &amp; Hardware <br />
               Shenzhen-based designer focused on the intersection of Intelligent Systems and Hardware Interaction. Transitioning from a visual and motion design foundation to building functional, hardware-led products integrated system.<br />

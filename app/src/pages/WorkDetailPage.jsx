@@ -25,7 +25,7 @@ function WorkDetailPage() {
   const meta = mod.meta || {};
   // Match the current work from the index by slug. If it's missing (or has no
   // cover image) we pass undefined and Seo falls back to its OG_FALLBACK_IMG
-  // (/img/home/comfypad-img.png), so share cards never break.
+  // (/img/home/comfypad-img.webp), so share cards never break.
   const currentWork = worksIndex.find((w) => w.slug === slug);
 
   return (

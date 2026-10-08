@@ -6,8 +6,8 @@ const containerBase =
 const mediaBase = 'block w-full h-auto';
 
 // Detects animated sources (.webm / .mp4) that should render via
-// <video autoPlay muted loop playsInline> instead of the picture/img
-// pair used for static images. Videos are excluded from lightbox
+// <video autoPlay muted loop playsInline> instead of static WebP images.
+// Videos are excluded from lightbox
 // registration because <video> inside the modal would need its own
 // playback handling.
 function isVideoSrc(src) {
@@ -16,25 +16,24 @@ function isVideoSrc(src) {
 
 function WorkImgContainer({ src, alt, className = '' }) {
   const gallery = useLightboxGallery();
+  const { register, unregister } = gallery;
   const indexRef = useRef(-1);
-  const entryRef = useRef(null);
 
   const isVideo = isVideoSrc(src);
 
   useEffect(() => {
     if (isVideo) return; // videos don't register with the lightbox
-    entryRef.current = { src, alt };
-    indexRef.current = gallery.register(entryRef.current);
+    const entry = { src, alt };
+    const index = register(entry);
+    indexRef.current = index;
     return () => {
-      if (indexRef.current >= 0) {
-        gallery.unregister(indexRef.current, entryRef.current);
+      if (index >= 0) {
+        unregister(index, entry);
       }
     };
-  }, [src, alt, gallery, isVideo]);
+  }, [src, alt, register, unregister, isVideo]);
 
   const cls = className ? `${containerBase} ${className}` : containerBase;
-  const isPng = /\.png$/i.test(src);
-  const webpSrc = isPng ? src.replace(/\.png$/i, '.webp') : null;
 
   if (isVideo) {
     const webmSrc = src.replace(/\.(webm|mp4)$/i, '.webm');
@@ -71,18 +70,7 @@ function WorkImgContainer({ src, alt, className = '' }) {
         }
       }}
     >
-      {webpSrc ? (
-        <picture>
-          <source srcSet={webpSrc} type="image/webp" />
-          <img
-            className={mediaBase}
-            src={src}
-            alt={alt}
-            loading="lazy"
-            decoding="async"
-          />
-        </picture>
-      ) : (
+      <picture>
         <img
           className={mediaBase}
           src={src}
@@ -90,7 +78,7 @@ function WorkImgContainer({ src, alt, className = '' }) {
           loading="lazy"
           decoding="async"
         />
-      )}
+      </picture>
     </div>
   );
 }

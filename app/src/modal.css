@@ -1,4 +1,4 @@
-/* 模态灯箱 — Phase 5 重建版 + Phase 5b 长图 pan/zoom */
+/* Image lightbox: shared desktop and touch pan/zoom. */
 
 @keyframes modalFadeIn {
   from { opacity: 0; }
@@ -14,14 +14,15 @@
   justify-content: center;
   align-items: center;
   padding: 20px;
+  padding: max(20px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
   box-sizing: border-box;
   animation: modalFadeIn 0.2s ease-out;
 }
 
 .modal-close {
   position: fixed;
-  top: 16px;
-  right: 24px;
+  top: max(16px, env(safe-area-inset-top));
+  right: max(24px, env(safe-area-inset-right));
   background: none;
   border: none;
   color: #f1f1f1;
@@ -46,21 +47,18 @@
   justify-content: center;
   max-width: 100%;
   max-height: 100%;
+  width: min(1720px, 92vw);
+  height: 88vh;
+  overflow: hidden;
+  touch-action: none;
   position: relative;
   box-sizing: border-box;
 }
 
-/* Long-image container: overflow visible so transform can push image outside;
-   the modal itself doesn't scroll — the draggable image sits inside. */
-.modal-content-container-long {
-  overflow: hidden;
-  max-width: min(1720px, 92vw);
-  max-height: 88vh;
-}
-
 .modal-content {
-  max-width: min(1720px, 92vw);
-  max-height: 88vh;
+  flex: none;
+  max-width: 100%;
+  max-height: 100%;
   width: auto;
   height: auto;
   object-fit: contain;
@@ -78,11 +76,9 @@
 .modal-content-long {
   max-height: 88vh;
   width: auto;
-  /* Smooth scroll-follow on hover when not zoomed. */
-  transition: transform 0.12s ease-out;
 }
 
-/* Once zoomed: drop the smoothing so dragging feels instantaneous. */
+/* Zoomed dragging follows pointer movements immediately. */
 .modal-content-zoomed {
   transition: none;
 }
@@ -131,6 +127,7 @@
 }
 
 .modal-dot {
+  position: relative;
   width: 8px;
   height: 8px;
   padding: 0;
@@ -160,7 +157,19 @@
   background: #ffffff;
 }
 
-/* 无动画偏好用户:禁用过渡 + 关闭 hover-follow smoothing */
+/* Expand invisible touch areas while preserving the original dots. */
+.modal-dot::after {
+  content: '';
+  position: absolute;
+  inset: -18px -4px;
+}
+
+@media (pointer: coarse) {
+  .modal-long-hint { display: none; }
+  .modal-dots { bottom: max(24px, calc(env(safe-area-inset-bottom) + 12px)); }
+}
+
+/* Respect reduced-motion preferences. */
 @media (prefers-reduced-motion: reduce) {
   .modal {
     animation: none;
@@ -175,9 +184,5 @@
   }
   .modal-content {
     opacity: 1;
-  }
-  /* Long image's hover-follow smoothing disabled; user can still click-to-zoom & drag. */
-  .modal-content-long {
-    transition: none;
   }
 }

@@ -1,223 +1,125 @@
-# 加新 Work 操作手册
+# 新增作品
 
-下面 8 步即可新增一个作品。预计耗时:文件准备 5 分钟 + 写 MDX 10–30 分钟(取决于图段数量)+ 验证 5 分钟。
+开发环境和启动方式见 [开发指南](../../DEVELOPMENT.md)，布局常量见 [设计规则](DESIGN_GUIDE.md)。下列素材命令从仓库根目录执行，检查命令从 `app/` 执行。
 
----
+## 1. 准备素材与 slug
 
-## 0. 预备:slug 与图源
+选用小写连字符 slug，例如 `my-new-project`。MDX 文件名、首页索引和 URL 必须一致。
 
-- **slug**:`kebab-case`,全小写 + 连字符,如 `my-new-project`。这个 slug 会同时出现在:
-  - 文件名 `src/works/my-new-project.mdx`
-  - `src/data/works-index.js` 的 `slug` 字段
-  - 浏览器 URL `/work/my-new-project`
-  - `app/public/sitemap.xml` 的一个 `<loc>` 节点
-- 把所有详情图素材放进 `app/public/img/<Project Title>/`(目录名允许大小写与空格,如 `My Project/`),PNG 即可,后续 build 时不需要手动转 webp —— 代码里 `WorkImgContainer` 会自动从 `.png` 推断同名 `.webp`。
-- 但 `.webp` 文件本身需要存在,否则 `<source srcSet="...">` 加载会 404。简化做法:跑一遍批量转换:
-  ```powershell
-  # 在 app/public/img/<Project>/ 目录里,把所有 PNG 批量转 webp
-  Get-ChildItem "*.png" | ForEach-Object {
-    $out = $_.BaseName + ".webp"
-   magick convert "$($_.Name)" -resize "1920x1920>" -quality 82 -define webp:method=6 "$out"
-  }
-  ```
-  > 命令需要 ImageMagick `magick` 已装。其他替代:`cwebp`(Google 官方 webp 编码器)、XnConvert(GUI)。
-- 动图不要直接放 GIF:先跑 `node app/scripts/convert-gifs.mjs` 转成同名 `.webm` + `.mp4`(原 GIF 自动备份到根目录 `_fullres-img-backup/gif-backup/`),MDX 里 `src` 写 `.webm` 路径即可 —— `WorkImgContainer` 会自动渲染 `<video autoplay muted loop playsInline>`,且**不会**注册进灯箱(参考 `sonder.mdx`)。
+PNG 放在 `assets/png-backups/New Project/`，封面放在 `assets/png-backups/home/`。已有合适的 WebP 可直接放入 `app/public/img/`。生成方法见 [PNG 备份说明](../../assets/png-backups/README.md)；转换脚本会重新生成全部对应 WebP，不必在每次开发时运行。
 
----
+网页使用 `/img/New Project/Cover.webp` 这类路径，允许空格，但大小写必须与实际文件一致。Linux 构建区分大小写。作品 PNG/JPEG 不放在 `public/img/`。
 
-## 1. 把图素材拷到 public 目录
+## 2. 创建 MDX
 
-```powershell
-# 假设项目名叫 "New Project"
-mkdir "app/public/img/New Project"
-# 把所有详情图(PNG / 已转好的 webp / GIF)拷进去
-Copy-Item ".\*.png" "app/public/img/New Project\"
-Copy-Item ".\*.webp" "app/public/img/New Project\"
-Copy-Item ".\*.gif" "app/public/img/New Project\"   # 如果有
-```
+新建 `app/src/works/my-new-project.mdx`，最小可用内容：
 
-首页卡片封面放:`app/public/img/home/<slug>-img.png`(命名规则与 `works-index` 的 `img` 字段一致),并生成对应 `<slug>-img.webp`。
-
----
-
-## 2. 创建 MDX 文件
-
-新建 `app/src/works/<slug>.mdx`。最小骨架:
-
-```jsx
+```mdx
 import WorkImgContainer from '../components/WorkImgContainer';
-import {
-  sectionImgCls,
-  section2imgCls,
-  section2imgItemCls,
-  featureUnitCls,
-  featureBlockGroupCls,
-  featureHeaderCls,
-  featureCls,
-  featuretitleCls,
-  descriptionCls,
-  descriptionTextCls,
-  featureGalleryCls,
-} from '../styles/markup';
+import { sectionImgCls } from '../styles/markup';
 
 export const meta = {
-  title: 'My New Project',              // 必填:L1 主标题
-  subtitle: '海报设计,品牌',           // 选填:L2 副标
-  description: '一句话描述本作品。',     // 选填:L3 顶部框架短描述
-  tags: ['Poster', 'Brand'],            // 选填:标签数组(目前不显示,留作 schema)
+  title: 'My New Project',
+  subtitle: 'Product Design',
+  description: '一句话介绍作品。',
 };
 
-<!-- 顶部首图:全宽占满 -->
 <div className={sectionImgCls}>
-  <WorkImgContainer src="/img/New Project/Cover.png" alt="Cover image" />
-</div>
-
-<!-- 连续 feature 段:多个 featureUnit 都放进同一个 featureBlockGroupCls,块间自动 ×2(40/20) -->
-<div className={featureBlockGroupCls}>
-<div className={featureUnitCls}>
-  <div className={featureHeaderCls}>
-    <div className={featureCls}>
-      <b className={featuretitleCls}>背景研究:<br />问题的边界在哪里</b>
-    </div>
-    <div className={descriptionCls}>
-      <p className={descriptionTextCls}>简述这一段的内容,2-3 句话即可。</p>
-    </div>
-  </div>
-  <div className={featureGalleryCls}>
-    <div className={section2imgCls}>
-      <div className={section2imgItemCls}>
-        <WorkImgContainer src="/img/New Project/Research 1.png" alt="Research phase 1" />
-      </div>
-      <div className={section2imgItemCls}>
-        <WorkImgContainer src="/img/New Project/Research 2.png" alt="Research phase 2" />
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- 一个纯图段(无标题),独立 section:放 featureBlockGroupCls 外面,靠外层容器 1× 与 run 相隔 -->
-<div className={sectionImgCls}>
-  <WorkImgContainer src="/img/New Project/Final.png" alt="Final outcome" />
+  <WorkImgContainer src="/img/New Project/Cover.webp" alt="作品封面" />
 </div>
 ```
 
-### 如果有 YouTube 视频
+title 必填；subtitle、description 选填。tags 可保存内容分类，但目前不展示，也未接入 schema。MDX 使用 JSX 语法：`className`、`<br />`、`allowFullScreen`；注释使用 `{/* 注释 */}`，不要使用 HTML 注释。
 
-参考 `comfypad.mdx` / `form-of-vertebra.mdx` 底部用 `<iframe className={iframePosterCls}>`:
+纯图布局参考 `italian-cookbook.mdx`；带段落布局参考 `wilderness-rescue.mdx`；三图布局参考 `nybs.mdx`。封面与连续 feature 段应一起放进 featureBlockGroupCls，维持块内 1 倍、块间 2 倍间距。
 
-```jsx
-import { iframeContainerCls, iframePosterCls } from '../styles/markup';
+双图示例：
 
-<div className={sectionImgCls}>
-  <div className={iframeContainerCls}>
-    <iframe
-      className={iframePosterCls}
-      loading="lazy"
-      src="https://www.youtube-nocookie.com/embed/VIDEO_ID"
-      title="Video player"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowFullScreen
-    />
+```mdx
+import { section2imgCls, section2imgItemCls } from '../styles/markup';
+
+<div className={section2imgCls}>
+  <div className={section2imgItemCls}>
+    <WorkImgContainer src="/img/New Project/Research 1.webp" alt="研究过程一" />
+  </div>
+  <div className={section2imgItemCls}>
+    <WorkImgContainer src="/img/New Project/Research 2.webp" alt="研究过程二" />
   </div>
 </div>
 ```
 
-### 如果需要 NYBS 风格的三图布局(1 大图 + 1 右侧两图垂直叠)
+把所需 import 放在文件顶部，只导入实际使用的常量。图片组件负责灯箱注册与键盘打开，无需自己再写点击处理。
 
-参考 `nybs.mdx` 与 `markup.js` 里的 `section3imgCls` / `leftSectorItemCls` / `rightSectorItemCls`。
+## 3. 首页索引与站点地图
 
----
-
-## 3. 在 `src/data/works-index.js` 加索引
+在 `app/src/data/works-index.js` 的期望顺序位置添加：
 
 ```js
-export const worksIndex = [
-  // ... 其它已有项
-  { slug: 'my-new-project', title: 'My New Project', img: '/img/home/my-new-project-img.png', alt: 'My New Project Image' },
-];
+{ slug: 'my-new-project', title: 'My New Project', img: '/img/home/my-new-project-img.webp', alt: '作品封面' },
 ```
 
-字段语义:
-- `slug` — 必须与 MDX 文件名完全一致
-- `title` —Home 卡片标题,通常与 MDX `meta.title` 同
-- `img` — Home 卡片封面 PNG 路径(对应 `app/public/img/home/<slug>-img.png`,该文件必须存在 + 对应 `.webp` 也存在)
-- `alt` — 无障碍说明文字
-
----
-
-## 4. 在 `app/public/sitemap.xml` 加一行
+确认封面文件真实存在。在 `app/public/sitemap.xml` 的 `</urlset>` 前加入：
 
 ```xml
 <url><loc>https://peterwzrlk18.github.io/work/my-new-project</loc><priority>0.7</priority><changefreq>yearly</changefreq></url>
 ```
 
-放在 `</urlset>` 之前即可。`priority` 取 `0.7`(work 详情页标准值)。
+测试中首页卡片数量目前固定为 9；新增作品后同步更新 `src/App.test.jsx` 中的预期数量。详情页参数化测试自动读取 worksIndex。
 
----
+## 4. 可选视频
 
-## 5. 本地验证
+已有动画放同名 `.webm` 与 `.mp4`，MDX 的 WorkImgContainer 写 `.webm` 路径；动画静音循环播放，不进入灯箱。
 
-```powershell
-cd app
-pnpm dev
-```
-
-浏览器开 `http://localhost:5173/`:
-- Home 底部应多一张卡片
-- 点进去确认 URL 是 `/work/my-new-project`
-- 检查:
-  - 标题 / 副标题 / 描述显示在顶部框架
-  - 所有图正常加载(包括 hover 显示 cursor pointer + 点击弹灯箱)
-  - 双图段在 desktop 横排、在 ≤900px 纵排
-  - 长图(h / w > 2)点击进灯箱后会显示"hover to inspect"提示,且支持 hover-follow / click-zoom
-
-如果某张图 staging 路径写错,DevTools Console 会有 404。**确认 webp 文件存在**(`.webp` 与 `.png` 同名同目录)。
-
----
-
-## 6. Lint + Test + Build
+需要转换 GIF 时，安装 FFmpeg 和 ffprobe、放入 `app/public/img/<Project>/`，再运行：
 
 ```powershell
-pnpm lint       # ESLint
-pnpm test       # 3 smoke tests 仍要全通过
-pnpm build      # 出 dist/
+node app/scripts/convert-gifs.mjs
 ```
 
-确认无新增 lint error、3 test 全通过、`dist/index.html` 与 `dist/assets/index-*.js` 体积持平或仅小幅增长(每张图加几十 KB JS)。
+该脚本将原 GIF 备份到本地 gitignored 的 `_fullres-img-backup/gif-backup/`，两种视频生成成功才删除 public GIF。GIF 备份不属于在线 PNG 备份区；若同路径已存在不同内容的备份，脚本报错并保留输入。
 
----
+YouTube 嵌入参考 ComfyPad：
 
-## 7. Commit + Push(自动触发部署)
+```mdx
+import { iframeContainerCls, iframePosterCls } from '../styles/markup';
+
+<div className={iframeContainerCls}>
+  <iframe
+    className={iframePosterCls}
+    loading="lazy"
+    src="https://www.youtube-nocookie.com/embed/VIDEO_ID"
+    title="作品演示"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowFullScreen
+  />
+</div>
+```
+
+## 5. 本地检查
+
+在 `app/` 中执行：
 
 ```powershell
-git add -A
-git commit -m "feat: add New Project work page"
-git push
+pnpm.cmd lint
+pnpm.cmd test
+pnpm.cmd build
 ```
 
-GitHub Actions 会跑 lint → test → build → deploy 到 `gh-pages`。1–2 分钟后 Actions 标签页看到绿勾即上线。
+也可双击根目录 preview.bat 进行交互检查：
 
-**因为 GitHub Pages CDN 对 HTML 缓存 10 分钟(`max-age=600`),首次访问需要 Ctrl+Shift+R 强刷一次拉新 JS bundle。**
+- 首页卡片、详情标题、封面和正文正确，图片没有缺失。
+- 桌面与手机宽度下左右对齐，双图切换为纵排，没有横向溢出。
+- 灯箱按页面顺序切图、首尾循环，关闭后焦点返回。
+- 手机双指缩放、双击恢复；原始比例左右滑动切图，放大后拖动不切图。
+- 桌面普通图双击、长图单击缩放，拖动后不会误触恢复。
+- URL 与 sitemap 一致；分享图使用绝对 WebP 地址。
 
----
+测试环境模拟触控事件，正式发布前尽量用真实手机验证。静态图片放在 public，新增图片增加部署素材体积，不会直接变成 JS bundle 内容。
 
-## 8. 部署后验证清单
+## 6. 提交与发布
 
-- [ ] `https://peterwzrlk18.github.io/` Home 多一张卡
-- [ ] `https://peterwzrlk18.github.io/work/my-new-project` 详情页全图全宽对齐左右边
-- [ ] 任意图点击进灯箱 + ECS 关 + ← → 翻 + 长图 hover-follow
-- [ ] `https://peterwzrlk18.github.io/sitemap.xml` 多一行
-- [ ] F12 看 `<title>` 是 "My New Project - Likai Wang"
-- [ ] F12 看 `og:image` 是 absolute URL(https://... 开头)
-- [ ] (可选)在 `https://opengraph.xyz/` 粘贴详情页 URL 看分享卡预览
+先在 GitHub Desktop 或 Git diff 中确认代码、网站 WebP、PNG 备份和 sitemap 都包含在预期修改中，再提交、推送。
 
----
+推送 main 只触发 lint、test 和 build。发布需要在 GitHub Actions 手动运行 Build & Deploy to GitHub Pages，或推送 v* 标签；检查通过后才部署到 gh-pages。不要使用重建 Git 索引或强推来“刷新缓存”。
 
-## 参考文件
-
-- **`src/styles/markup.js`** — 23 个 class 常量,所有 9 个作品都从这取;新增 work 不需要往里面加常量,直接复用现有
-- **`src/components/WorkImgContainer.jsx`** — 万能图容器,自动处理 webp source / 注册灯箱 / 焦点环 / key.onKeyDown
-- **`src/components/Modal.jsx`** — 灯箱系统:5b 加的 pan-zoom / hover-follow 全在这里,新 work 不需要碰
-- **`README.md` § 间距与设计原则** — 「组内 1× / 组间 2×」两档间距准则,决定 `featureUnitCls` / `featureBlockGroupCls` 何时使用
-- **`nybs.mdx` / `wilderness-rescue.mdx`** — 两份完整模板,任何新 work 直接参考它们的结构
+发布后检查首页、作品深链接直接刷新、图片和灯箱、sitemap。若显示旧版本，先确认 deploy job 成功，再尝试浏览器强制刷新。
